@@ -25,10 +25,10 @@ namespace Hsf.ApplicationProcess.August2020.Data.Repositories
             return Task.FromResult(_applicants.FirstOrDefault(a => a.ID == id));
         }
 
-        public bool AddNewApplicant(Applicant applicant)
+        public Task<int> AddNewApplicant(Applicant applicant)
         {
             _applicants.Add(applicant);
-            return true;
+            return Task.FromResult(1);
         }
 
         public bool UpdateApplicant(int id, Applicant applicant)

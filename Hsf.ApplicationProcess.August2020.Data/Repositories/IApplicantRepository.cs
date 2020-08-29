@@ -10,7 +10,7 @@ namespace Hsf.ApplicationProcess.August2020.Data.Repositories
     public interface IApplicantRepository
     {
         Task<Applicant> GetApplicantById(int id);
-        bool AddNewApplicant(Applicant applicant);
+        Task<int> AddNewApplicant(Applicant applicant);
         bool UpdateApplicant(int id, Applicant applicant);
         bool DeleteApplicant(int id);
     }

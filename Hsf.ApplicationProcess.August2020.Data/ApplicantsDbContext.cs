@@ -21,7 +21,7 @@ namespace Hsf.ApplicationProcess.August2020.Data
 
         private Applicant[] InitialSeedContent()
         {
-            return new Applicant[]
+            return new[]
             {
                 new Applicant
                 {

@@ -23,11 +23,10 @@ namespace Hsf.ApplicationProcess.August2020.Data.Repositories
             return _context.Applicants.FirstOrDefaultAsync(a => a.ID == id);
         }
 
-        public bool AddNewApplicant(Applicant applicant)
+        public async Task<int> AddNewApplicant(Applicant applicant)
         {
-            _context.Applicants.Add(applicant);
-            _context.SaveChanges();
-            return true;
+            await _context.AddAsync(applicant);
+            return await _context.SaveChangesAsync();
         }
 
         public bool UpdateApplicant(int id, Applicant applicant)
