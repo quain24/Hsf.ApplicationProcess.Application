@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Hsf.ApplicationProcess.August2020.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,6 +39,8 @@ namespace Hsf.ApplicationProcess.August2020.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            var context = app.ApplicationServices.GetService<ApplicantsDbContext>();
 
             app.UseHttpsRedirection();
 

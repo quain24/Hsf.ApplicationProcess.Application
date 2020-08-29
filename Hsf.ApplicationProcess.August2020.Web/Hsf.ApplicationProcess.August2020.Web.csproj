@@ -14,4 +14,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="5.1.2" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Hsf.ApplicationProcess.August2020.Data\Hsf.ApplicationProcess.August2020.Data.csproj" />
+    <ProjectReference Include="..\Hsf.ApplicationProcess.August2020.Domain\Hsf.ApplicationProcess.August2020.Domain.csproj" />
+  </ItemGroup>
 </Project>
