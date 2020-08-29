@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Hsf.ApplicationProcess.August2020.Data;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
+using Hsf.ApplicationProcess.August2020.Web.Extensions;
 
 namespace Hsf.ApplicationProcess.August2020.Web.Controllers
 {
@@ -27,26 +28,36 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Applicant>> GetApplicantById(int id)
         {
-            var applicant = await _repository.GetApplicantById(id);
+            var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
                 return NoContent();
             return Ok(applicant);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> PostApplicant([FromBody] JsonElement body)
+        [HttpPut]
+        public async Task<ActionResult<Applicant>> UpdateApplicant([FromBody] JsonElement applicantJson)
         {
-            var json = body.GetRawText();
-            var applicant = JsonSerializer.Deserialize<Applicant>(json);
-            if(_repository.AddNewApplicant(applicant)) 
-               return CreatedAtAction("GetApplicantById", new {id = applicant.ID}, applicant);
+
+            var applicant = applicantJson.Deserialize<Applicant>();
+
+            if(await _repository.UpdateApplicantAsync(0, applicant) >= 1)
+                return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
+            return BadRequest();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Applicant>> PostApplicant([FromBody] JsonElement applicantJson)
+        {
+            var applicant = applicantJson.Deserialize<Applicant>();
+            if(await _repository.AddNewApplicantAsync(applicant) > 0) 
+               return CreatedAtAction(nameof(GetApplicantById), new {id = applicant.ID}, applicant);
             return BadRequest();
         }
 
         [HttpDelete("{id:int}")]
-        public ActionResult<Applicant> DeleteApplicant(int id)
+        public async Task<ActionResult<Applicant>> DeleteApplicant(int id)
         {
-            if (_repository.DeleteApplicant(id))
+            if (await _repository.DeleteApplicantAsync(id)>=1)
                 return Ok();
             return NotFound();
         }

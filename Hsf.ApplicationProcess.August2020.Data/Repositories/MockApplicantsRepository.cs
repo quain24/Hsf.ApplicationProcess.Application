@@ -20,37 +20,37 @@ namespace Hsf.ApplicationProcess.August2020.Data.Repositories
             });
         }
 
-        public Task<Applicant> GetApplicantById(int id)
+        public Task<Applicant> GetApplicantByIdAsync(int id)
         {
             return Task.FromResult(_applicants.FirstOrDefault(a => a.ID == id));
         }
 
-        public Task<int> AddNewApplicant(Applicant applicant)
+        public Task<int> AddNewApplicantAsync(Applicant applicant)
         {
             _applicants.Add(applicant);
             return Task.FromResult(1);
         }
 
-        public bool UpdateApplicant(int id, Applicant applicant)
+        public async Task<int> UpdateApplicantAsync(int id, Applicant applicant)
         {
             var applicantToUpdate = _applicants.FirstOrDefault(a => a.ID == id);
             if (applicantToUpdate is null)
-                return false;
+                return 0;
             _applicants.Remove(applicantToUpdate);
             _applicants.Add(applicant);
-            return true;
+            return 1;
         }
 
-        public bool DeleteApplicant(int id)
+        public Task<int> DeleteApplicantAsync(int id)
         {
             var applicantToRemoval = _applicants.FirstOrDefault(a => a.ID == id);
             if (applicantToRemoval?.ID == id)
             {
                 _applicants.Remove(applicantToRemoval);
-                return true;
+                return Task.FromResult(1);
             }
 
-            return false;
+            return Task.FromResult(0);
         }
     }
 }

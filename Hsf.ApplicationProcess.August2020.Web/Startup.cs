@@ -39,6 +39,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
             // InMemory config for DI
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
