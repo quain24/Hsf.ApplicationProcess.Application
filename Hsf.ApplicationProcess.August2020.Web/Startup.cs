@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Hsf.ApplicationProcess.August2020.Data;
+using Hsf.ApplicationProcess.August2020.Data.Repositories;
+using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -30,6 +33,12 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
             // Inject an implementation of ISwaggerProvider with defaulted settings applied
             services.AddSwaggerGen();
+
+            services.AddDbContext<ApplicantsDbContext>(options =>
+                options.UseInMemoryDatabase(databaseName: "Applicants"));
+
+            // InMemory config for DI
+            services.AddScoped<IApplicantRepository, InMemoryRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -39,8 +48,6 @@ namespace Hsf.ApplicationProcess.August2020.Web
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            var context = app.ApplicationServices.GetService<ApplicantsDbContext>();
 
             app.UseHttpsRedirection();
 
@@ -61,7 +68,6 @@ namespace Hsf.ApplicationProcess.August2020.Web
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "HSF ApplicationProcess");
             });
-
         }
     }
 }

@@ -13,4 +13,8 @@
     <ProjectReference Include="..\Hsf.ApplicationProcess.August2020.Domain\Hsf.ApplicationProcess.August2020.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\" />
+  </ItemGroup>
+
 </Project>
