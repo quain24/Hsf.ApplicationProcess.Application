@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Hsf.ApplicationProcess.August2020.Data;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
+using Hsf.ApplicationProcess.August2020.Web.SwaggerExamples;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace Hsf.ApplicationProcess.August2020.Web
 {
@@ -32,7 +34,12 @@ namespace Hsf.ApplicationProcess.August2020.Web
             services.AddControllers();
 
             // Inject an implementation of ISwaggerProvider with defaulted settings applied
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(c =>
+            {
+                c.ExampleFilters();
+            });
+
+            services.AddSwaggerExamplesFromAssemblyOf<ApplicantExample>();
 
             services.AddDbContext<ApplicantsDbContext>(options =>
                 options.UseInMemoryDatabase(databaseName: "Applicants"));
@@ -54,7 +61,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

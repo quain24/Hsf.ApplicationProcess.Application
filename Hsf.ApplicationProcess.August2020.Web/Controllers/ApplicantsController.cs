@@ -55,7 +55,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<Applicant>> DeleteApplicant(int id)
+        public async Task<IActionResult> DeleteApplicant(int id)
         {
             if (await _repository.DeleteApplicantAsync(id)>=1)
                 return Ok();

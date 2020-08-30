@@ -16,7 +16,6 @@ namespace Hsf.ApplicationProcess.August2020.Data
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicantsDbContext).Assembly);
             modelBuilder.Entity<Applicant>().HasData(InitialSeedContent());
 
-
             base.OnModelCreating(modelBuilder);
         }
 
