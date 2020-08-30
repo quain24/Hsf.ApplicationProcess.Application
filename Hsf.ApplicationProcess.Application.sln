@@ -3,13 +3,18 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Web", "Hsf.ApplicationProcess.August2020.Web\Hsf.ApplicationProcess.August2020.Web.csproj", "{6F7D7038-E32D-4540-906D-D321D017D9E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hsf.ApplicationProcess.August2020.Web", "Hsf.ApplicationProcess.August2020.Web\Hsf.ApplicationProcess.August2020.Web.csproj", "{6F7D7038-E32D-4540-906D-D321D017D9E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Data", "Hsf.ApplicationProcess.August2020.Data\Hsf.ApplicationProcess.August2020.Data.csproj", "{70CCB4AE-F9E2-4738-921B-F905F23F2D0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hsf.ApplicationProcess.August2020.Data", "Hsf.ApplicationProcess.August2020.Data\Hsf.ApplicationProcess.August2020.Data.csproj", "{70CCB4AE-F9E2-4738-921B-F905F23F2D0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Domain", "Hsf.ApplicationProcess.August2020.Domain\Hsf.ApplicationProcess.August2020.Domain.csproj", "{C06240B1-6733-4057-AA59-6141745AD779}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hsf.ApplicationProcess.August2020.Domain", "Hsf.ApplicationProcess.August2020.Domain\Hsf.ApplicationProcess.August2020.Domain.csproj", "{C06240B1-6733-4057-AA59-6141745AD779}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Blazor", "Hsf.ApplicationProcess.August2020.Blazor\Hsf.ApplicationProcess.August2020.Blazor.csproj", "{FFB91E73-558C-4D8B-BE76-61CC692E227E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hsf.ApplicationProcess.August2020.Blazor", "Hsf.ApplicationProcess.August2020.Blazor\Hsf.ApplicationProcess.August2020.Blazor.csproj", "{FFB91E73-558C-4D8B-BE76-61CC692E227E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4AC71009-B2E2-4961-94C3-7944455F8C27}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

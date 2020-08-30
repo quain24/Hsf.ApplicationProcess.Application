@@ -8,7 +8,25 @@
             <summary>
             Return Applicant by ID number
             </summary>
-            <param name="id" example="1">Applicants unique ID</param>
+            <param name="id" example="1">Applicants unique ID number</param>
+        </member>
+        <member name="M:Hsf.ApplicationProcess.August2020.Web.Controllers.ApplicantsController.UpdateApplicant(System.Int32,Hsf.ApplicationProcess.August2020.Domain.Models.Applicant)">
+            <summary>
+             Updates applicant data with provided ones.
+             </summary>
+             <param name="applicantJson">And updated applicant data in json format</param>
+        </member>
+        <member name="M:Hsf.ApplicationProcess.August2020.Web.Controllers.ApplicantsController.PostApplicant(Hsf.ApplicationProcess.August2020.Domain.Models.Applicant)">
+            <summary>
+             Adds new applicant to database.
+             </summary>
+             <param name="applicantJson">New applicant data in json format</param>
+        </member>
+        <member name="M:Hsf.ApplicationProcess.August2020.Web.Controllers.ApplicantsController.DeleteApplicant(System.Int32)">
+            <summary>
+            Deletes Applicant with provided ID number
+            </summary>
+            <param name="id" example="1">Applicants unique ID number</param>
         </member>
     </members>
 </doc>

@@ -1,13 +1,15 @@
-﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
+﻿using Hsf.ApplicationProcess.August2020.Data.Repositories;
+using Hsf.ApplicationProcess.August2020.Domain.Models;
+using Hsf.ApplicationProcess.August2020.Web.Extensions;
+using Hsf.ApplicationProcess.August2020.Web.SwaggerExamples;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.Filters;
 using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Hsf.ApplicationProcess.August2020.Data;
-using Hsf.ApplicationProcess.August2020.Data.Repositories;
-using Hsf.ApplicationProcess.August2020.Web.Extensions;
 
 namespace Hsf.ApplicationProcess.August2020.Web.Controllers
 {
@@ -28,11 +30,10 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         /// <summary>
         /// Return Applicant by ID number
         /// </summary>
-        /// <param name="id" example="1">Applicants unique ID</param>
+        /// <param name="id" example="1">Applicants unique ID number</param>
         [HttpGet("{id}", Name = "GetApplicantById")]
-        [ProducesResponseType(typeof(Applicant), 200)]
-        [ProducesResponseType(typeof(IDictionary<string, string>), 404)]
-        [ProducesResponseType(500)]
+        [SwaggerResponse((int)HttpStatusCode.OK, "ID exists and corresponding Applicant has been returned.", typeof(Applicant))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "ID has not been found!", typeof(IDictionary<string, string>))]
         public async Task<ActionResult<Applicant>> GetApplicantById(int id)
         {
             var applicant = await _repository.GetApplicantByIdAsync(id);
@@ -41,30 +42,54 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             return Ok(applicant);
         }
 
+        ///<summary>
+        /// Updates applicant data with provided ones.
+        /// </summary>
+        /// <param name="applicantJson">And updated applicant data in json format</param>
         [HttpPut]
-        public async Task<ActionResult<Applicant>> UpdateApplicant([FromBody] JsonElement applicantJson)
+        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantUpdateExample))]
+        [SwaggerResponse((int)HttpStatusCode.Created, "ID exists and was updated.", typeof(Applicant))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(IDictionary<string, string>))]
+        public async Task<ActionResult<Applicant>> UpdateApplicant([FromHeader] int id, [FromBody] Applicant applicant)
         {
+            applicant.ID = id;
 
-            var applicant = applicantJson.Deserialize<Applicant>();
-
-            if(await _repository.UpdateApplicantAsync(0, applicant) >= 1)
+            if (await _repository.UpdateApplicantAsync(id, applicant))
+            {
+                await _repository.SaveChangesAsync();
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
-            return BadRequest();
+            }
+            return NotFound();
         }
 
+        ///<summary>
+        /// Adds new applicant to database.
+        /// </summary>
+        /// <param name="applicantJson">New applicant data in json format</param>
         [HttpPost]
-        public async Task<ActionResult<Applicant>> PostApplicant([FromBody] JsonElement applicantJson)
+        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantExample))]
+        [SwaggerResponse((int)HttpStatusCode.Created, "ID exists and was updated.", typeof(Applicant))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(IDictionary<string, string>))]
+        public async Task<ActionResult<Applicant>> PostApplicant([FromBody] Applicant applicant)
         {
-            var applicant = applicantJson.Deserialize<Applicant>();
-            if(await _repository.AddNewApplicantAsync(applicant) > 0) 
-               return CreatedAtAction(nameof(GetApplicantById), new {id = applicant.ID}, applicant);
-            return BadRequest();
+            if (await _repository.AddNewApplicantAsync(applicant))
+            {
+                _repository.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
+            }
+            return NotFound();
         }
 
-        [HttpDelete("{id:int}")]
+        /// <summary>
+        /// Deletes Applicant with provided ID number
+        /// </summary>
+        /// <param name="id" example="1">Applicants unique ID number</param>
+        [HttpDelete("{id}")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "ID exists and was updated.", typeof(IDictionary<string, string>))]
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(IDictionary<string, string>))]
         public async Task<IActionResult> DeleteApplicant(int id)
         {
-            if (await _repository.DeleteApplicantAsync(id)>=1)
+            if (await _repository.DeleteApplicantAsync(id))
                 return Ok();
             return NotFound();
         }

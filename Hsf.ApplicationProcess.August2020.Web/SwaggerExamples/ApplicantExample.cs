@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Hsf.ApplicationProcess.August2020.Domain.Models;
+﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Hsf.ApplicationProcess.August2020.Web.SwaggerExamples
