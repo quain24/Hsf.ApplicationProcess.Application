@@ -13,8 +13,8 @@ namespace Hsf.ApplicationProcess.August2020.Web.SwaggerExamples
                 Name = "Gregory",
                 FamilyName = "Novak",
                 Age = 56,
-                Address = "Avenue 5",
-                CountryOfOrigin = "England",
+                Address = "Avenue 5 Boston",
+                CountryOfOrigin = "Germany",
                 EmailAddress = "Greg@google.com",
                 Hired = false
             };

@@ -1,24 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Hsf.ApplicationProcess.August2020.Data;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
-using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Hsf.ApplicationProcess.August2020.Web.SwaggerExamples;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Swashbuckle.AspNetCore.Swagger;
+using System;
+using System.IO;
 
 namespace Hsf.ApplicationProcess.August2020.Web
 {
@@ -35,9 +31,12 @@ namespace Hsf.ApplicationProcess.August2020.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddFluentValidation();
+                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
 
-            // Inject an implementation of ISwaggerProvider with defaulted settings applied
+            // Turned off automatic 400 code response on error to enable error logging in controllers
+            services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
+
+            // Inject an implementation of ISwaggerProvider
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "HSF Applicant Demo API", Version = "v0.1" });
@@ -45,9 +44,10 @@ namespace Hsf.ApplicationProcess.August2020.Web
                 c.EnableAnnotations();
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "HSFApi.xml"));
 
+                c.AddFluentValidationRules();
+
                 c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             });
-
 
             services.AddSwaggerExamplesFromAssemblyOf<ApplicantExample>();
 
@@ -57,6 +57,8 @@ namespace Hsf.ApplicationProcess.August2020.Web
             // Working repository
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
 
+            // Disable translations in fluent validation
+            ValidatorOptions.Global.LanguageManager.Enabled = false;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
