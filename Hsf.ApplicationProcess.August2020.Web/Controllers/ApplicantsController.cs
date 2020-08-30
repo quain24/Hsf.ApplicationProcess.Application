@@ -25,12 +25,19 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Return Applicant by ID number
+        /// </summary>
+        /// <param name="id" example="1">Applicants unique ID</param>
+        [HttpGet("{id}", Name = "GetApplicantById")]
+        [ProducesResponseType(typeof(Applicant), 200)]
+        [ProducesResponseType(typeof(IDictionary<string, string>), 404)]
+        [ProducesResponseType(500)]
         public async Task<ActionResult<Applicant>> GetApplicantById(int id)
         {
             var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
-                return NoContent();
+                return NotFound();
             return Ok(applicant);
         }
 

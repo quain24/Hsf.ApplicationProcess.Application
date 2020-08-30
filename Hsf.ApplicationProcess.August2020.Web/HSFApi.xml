@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Hsf.ApplicationProcess.August2020.Web</name>
+    </assembly>
+    <members>
+        <member name="M:Hsf.ApplicationProcess.August2020.Web.Controllers.ApplicantsController.GetApplicantById(System.Int32)">
+            <summary>
+            Return Applicant by ID number
+            </summary>
+            <param name="id" example="1">Applicants unique ID</param>
+        </member>
+    </members>
+</doc>

@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>D:\Moje dokumenty\c_sharp\Hsf.ApplicationProcess.Application\Hsf.ApplicationProcess.August2020.Web\HSFApi.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="9.2.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />

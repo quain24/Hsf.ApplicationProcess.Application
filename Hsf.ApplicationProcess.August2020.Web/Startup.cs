@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Hsf.ApplicationProcess.August2020.Data;
@@ -37,6 +38,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
             services.AddSwaggerGen(c =>
             {
                 c.ExampleFilters();
+                c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "HSFApi.xml"));
             });
 
             services.AddSwaggerExamplesFromAssemblyOf<ApplicantExample>();
