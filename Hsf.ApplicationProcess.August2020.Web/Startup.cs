@@ -15,6 +15,11 @@ using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.IO;
+using AutoMapper;
+using I18Next.Net.AspNetCore;
+using I18Next.Net.Backends;
+using I18Next.Net.Extensions;
+using Serilog;
 
 namespace Hsf.ApplicationProcess.August2020.Web
 {
@@ -54,6 +59,19 @@ namespace Hsf.ApplicationProcess.August2020.Web
             services.AddDbContext<ApplicantsDbContext>(options =>
                 options.UseInMemoryDatabase(databaseName: "Applicants"));
 
+            // Automapper initialization
+            services.AddAutoMapper(typeof(Startup));
+
+            // Translation framework
+            services.AddI18NextLocalization(i18N =>
+            {
+                var a = new JsonFileBackend("locales");
+                i18N.IntegrateToAspNetCore()
+                    .AddBackend(new JsonFileBackend("locales"))
+                    .UseDefaultLanguage("en")
+                    .UseFallbackLanguage("en");
+            });
+
             // Working repository
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
 
@@ -68,10 +86,12 @@ namespace Hsf.ApplicationProcess.August2020.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseSerilogRequestLogging();
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
 
             //app.UseAuthorization();
 
@@ -89,6 +109,8 @@ namespace Hsf.ApplicationProcess.August2020.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "HSF ApplicationProcess");
                 c.DocumentTitle = "HSF application demo";
             });
+
+            app.UseRequestLocalization(options => options.AddSupportedCultures("en", "pl"));
         }
     }
 }

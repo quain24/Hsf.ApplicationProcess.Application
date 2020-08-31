@@ -10,6 +10,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
+using AutoMapper;
+using Hsf.ApplicationProcess.August2020.Web.DTO;
+using Microsoft.Extensions.Localization;
 
 namespace Hsf.ApplicationProcess.August2020.Web.Controllers
 {
@@ -20,11 +23,15 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
     {
         private readonly IApplicantRepository _repository;
         private readonly ILogger<ApplicantsController> _logger;
+        private readonly IMapper _mapper;
+        private readonly IStringLocalizer<ApplicantsController> _localizer;
 
-        public ApplicantsController(IApplicantRepository repository, ILogger<ApplicantsController> logger)
+        public ApplicantsController(IApplicantRepository repository, ILogger<ApplicantsController> logger, IMapper mapper, IStringLocalizer<ApplicantsController> localizer)
         {
             _repository = repository;
             _logger = logger;
+            _mapper = mapper;
+            _localizer = localizer;
         }
 
         /// <summary>
@@ -39,8 +46,9 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
             {
-                _logger.LogInformation($"Get failed - there is no applicant with id {id}.");
-                return NotFound();
+                var msg = _localizer["crud_errors.get_failed_msg", new {id}];
+                _logger.LogInformation(msg);
+                return NotFound(msg);
             }
             _logger.LogInformation($"Found and returned applicant with id {id}.");
             return Ok(applicant);
@@ -50,14 +58,16 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         /// Updates applicant data with provided ones.
         /// </summary>
         /// <param name="id" example="1">Target ID</param>
-        /// <param name="applicant">And updated applicant data in json format</param>
+        /// <param name="applicantUpdateDto">And updated applicant data in json format</param>
         [HttpPut]
-        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantUpdateExample))]
+        [SwaggerRequestExample(typeof(ApplicantNoIdDTO), typeof(ApplicantNoIdDTOExample))]
         [SwaggerResponse((int)HttpStatusCode.Created, "ID exists and was updated.", typeof(Applicant))]
-        [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(IDictionary<string, string>))]
-        public async Task<ActionResult<Applicant>> UpdateApplicant([FromHeader] int id, [FromBody] Applicant applicant)
+        [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(string))]
+        public async Task<ActionResult<Applicant>> UpdateApplicant([FromHeader][Range(0, int.MaxValue)] int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
         {
+            var applicant =_mapper.Map<Applicant>(applicantUpdateDto);
             applicant.ID = id;
+
             if (!ModelState.IsValid)
             {
                 _logger.LogAllErrorsFrom(nameof(UpdateApplicant), ModelState);
@@ -79,10 +89,12 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         /// </summary>
         /// <param name="applicant">New applicant data in json format</param>
         [HttpPost]
-        [SwaggerRequestExample(typeof(Applicant), typeof(ApplicantExample))]
+        [SwaggerRequestExample(typeof(ApplicantNoIdDTO), typeof(ApplicantNoIdDTOExample))]
         [SwaggerResponse((int)HttpStatusCode.Created, "Applicant has been created.", typeof(Applicant))]
-        public async Task<ActionResult<Applicant>> PostApplicant([FromBody] Applicant applicant)
+        public async Task<ActionResult<Applicant>> PostApplicant([FromBody] ApplicantNoIdDTO applicantPostDto)
         {
+            var applicant = _mapper.Map<Applicant>(applicantPostDto);
+
             if (!ModelState.IsValid)
             {
                 _logger.LogAllErrorsFrom(nameof(PostApplicant), ModelState);
@@ -106,7 +118,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         [HttpDelete("{id}")]
         [SwaggerResponse((int)HttpStatusCode.OK, "ID exists and corresponding Applicant has been removed.")]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(string))]
-        public async Task<IActionResult> DeleteApplicant(int id)
+        public async Task<IActionResult> DeleteApplicant([Range(0, int.MaxValue)] int id)
         {
             if (id < 0)
             {

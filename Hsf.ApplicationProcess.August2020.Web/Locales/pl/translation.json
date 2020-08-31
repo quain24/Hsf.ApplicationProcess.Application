@@ -1,0 +1,5 @@
+{
+  "crud_errors": {
+    "get_failed_msg": "Zapytanie nieudane - brak aplikanta o id {{id}}"
+  } 
+}
