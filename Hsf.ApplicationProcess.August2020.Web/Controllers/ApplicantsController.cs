@@ -46,12 +46,14 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
             {
-                var msg = _localizer["crud_errors.get_failed_msg", new {id}];
-                _logger.LogInformation(msg);
-                return NotFound(msg);
+                var errMsg = _localizer["crud_errors.get_failed", new{id}].Value;
+                _logger.LogInformation(errMsg);
+                return NotFound(errMsg);
             }
-            _logger.LogInformation($"Found and returned applicant with id {id}.");
-            return Ok(applicant);
+
+            var okMsg = _localizer["crud_ok.get_returned", new {id}].Value;
+            _logger.LogInformation(okMsg);
+            return Ok(okMsg);
         }
 
         ///<summary>
@@ -74,14 +76,17 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
                 return BadRequest(ModelState);
             }
 
+
             if (await _repository.UpdateApplicantAsync(id, applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation($"Applicant updated: ID - {applicant.ID}");
+                _logger.LogInformation(_localizer["crud_ok.update_updated", new{id = applicant.ID}]);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
-            _logger.LogInformation($"Update failed - there is no applicant with id {id}.");
-            return NotFound($"Update failed - there is no applicant with id {id}.");
+
+            var msg = _localizer["crud_errors.update_failed_no_id", new {id}].Value;
+            _logger.LogInformation(msg);
+            return NotFound(msg);
         }
 
         ///<summary>
@@ -104,11 +109,13 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             if (await _repository.AddNewApplicantAsync(applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation($"New applicant added: ID - {applicant.ID}");
+                _logger.LogInformation(_localizer["crud_ok.add_success", new {id = applicant.ID}].Value);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
-            _logger.LogError("Could not add new applicant to database!");
-            return BadRequest();
+
+            var msg = _localizer["crud_errors.add_failed_db_error"].Value;
+            _logger.LogError(msg);
+            return BadRequest(msg);
         }
 
         /// <summary>
@@ -122,17 +129,21 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         {
             if (id < 0)
             {
-                _logger.LogError("ID cannot be negative.");
-                return BadRequest("ID cannot be negative.");
+                var msg = _localizer["crud_errors.common_id_negative"].Value;
+                _logger.LogError(msg);
+                return BadRequest(msg);
             }
 
             if (await _repository.DeleteApplicantAsync(id))
             {
-                _logger.LogInformation($"Applicant with id {id} has been deleted.");
-                return Ok();
+                var msgOk = _localizer["crud_ok.delete_success", new {id}].Value;
+                _logger.LogInformation(msgOk);
+                return Ok(msgOk);
             }
-            _logger.LogInformation($"Deletion failed - there is no applicant with id {id}.");
-            return NotFound();
+
+            var msgError = _localizer["crud_errors.delete_failed_no_id", new {id}].Value;
+            _logger.LogInformation(msgError);
+            return NotFound(msgError);
         }
     }
 }

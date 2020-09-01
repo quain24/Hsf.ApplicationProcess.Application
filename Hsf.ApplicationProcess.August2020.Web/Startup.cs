@@ -14,8 +14,10 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using AutoMapper;
+using Hsf.ApplicationProcess.August2020.Web.Config;
 using I18Next.Net.AspNetCore;
 using I18Next.Net.Backends;
 using I18Next.Net.Extensions;
@@ -54,6 +56,8 @@ namespace Hsf.ApplicationProcess.August2020.Web
                 c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             });
 
+            
+
             services.AddSwaggerExamplesFromAssemblyOf<ApplicantExample>();
 
             services.AddDbContext<ApplicantsDbContext>(options =>
@@ -63,20 +67,22 @@ namespace Hsf.ApplicationProcess.August2020.Web
             services.AddAutoMapper(typeof(Startup));
 
             // Translation framework
+            var languageConfig = new LanguageConfig();
+            Configuration.GetSection(nameof(languageConfig)).Bind(languageConfig);
+
             services.AddI18NextLocalization(i18N =>
             {
-                var a = new JsonFileBackend("locales");
                 i18N.IntegrateToAspNetCore()
-                    .AddBackend(new JsonFileBackend("locales"))
-                    .UseDefaultLanguage("en")
-                    .UseFallbackLanguage("en");
+                    .AddBackend(new JsonFileBackend(languageConfig.LocalesFolderLocation))
+                    //.UseDefaultLanguage(languageConfig.DefaultLanguage)
+                    .UseFallbackLanguage(languageConfig.FallbackLanguage);
             });
-
+            
             // Working repository
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
 
             // Disable translations in fluent validation
-            ValidatorOptions.Global.LanguageManager.Enabled = false;
+            //ValidatorOptions.Global.LanguageManager.Enabled = false;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -92,6 +98,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
             app.UseRouting();
 
+            
 
             //app.UseAuthorization();
 
@@ -110,7 +117,9 @@ namespace Hsf.ApplicationProcess.August2020.Web
                 c.DocumentTitle = "HSF application demo";
             });
 
-            app.UseRequestLocalization(options => options.AddSupportedCultures("en", "pl"));
+            var languageConfig = new LanguageConfig();
+            Configuration.GetSection(nameof(languageConfig)).Bind(languageConfig);
+            app.UseRequestLocalization(options => options.AddSupportedCultures(languageConfig.SupportedLanguages.ToArray()));
         }
     }
 }

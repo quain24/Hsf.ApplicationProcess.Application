@@ -1,5 +1,21 @@
 {
   "crud_errors": {
-    "get_failed_msg": "Get failed - there is no applicant with id {{id}}"
+    "get_failed": "Get failed - there is no applicant with ID {{id}}",
+    "update_failed_no_id": "Update failed - there is no applicant with ID {{id}}.",
+    "delete_failed_no_id": "Deletion failed - there is no applicant with ID {{id}}.",
+    "add_failed_db_error": "Could not add new applicant to database!",
+    "common_id_negative": "ID cannot be negative."
+  },
+
+  "crud_ok": {
+    "get_returned": "Found and returned applicant with ID {{id}}.",
+    "update_updated": "Applicant updated: ID - {{id}}.",
+    "add_success": "New applicant added: ID - {id}}",
+    "delete_success": "Applicant with id {{id}} has been deleted." 
+  },
+
+  "validation": {
+    "err_no_such_country": "Country name '{{countryName}}' is not valid.",
+    "err_bad_email_format": "Provided email has invalid format." 
   } 
 }
