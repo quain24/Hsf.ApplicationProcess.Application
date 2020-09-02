@@ -1,8 +1,14 @@
-using FluentValidation;
+using AutoMapper;
 using FluentValidation.AspNetCore;
 using Hsf.ApplicationProcess.August2020.Data;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
+using Hsf.ApplicationProcess.August2020.Domain.Models;
+using Hsf.ApplicationProcess.August2020.Domain.Validators;
+using Hsf.ApplicationProcess.August2020.Web.Config;
 using Hsf.ApplicationProcess.August2020.Web.SwaggerExamples;
+using I18Next.Net.AspNetCore;
+using I18Next.Net.Backends;
+using I18Next.Net.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,17 +17,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Swashbuckle.AspNetCore.Filters;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using AutoMapper;
-using Hsf.ApplicationProcess.August2020.Web.Config;
-using I18Next.Net.AspNetCore;
-using I18Next.Net.Backends;
-using I18Next.Net.Extensions;
-using Serilog;
 
 namespace Hsf.ApplicationProcess.August2020.Web
 {
@@ -38,7 +38,12 @@ namespace Hsf.ApplicationProcess.August2020.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers()
-                .AddFluentValidation(fvc => fvc.RegisterValidatorsFromAssemblyContaining<Startup>());
+                .AddFluentValidation(fvc =>
+                {
+                    fvc.RegisterValidatorsFromAssemblyContaining<Startup>();
+                    fvc.RegisterValidatorsFromAssemblyContaining<Applicant>();
+                    services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
+                });
 
             // Turned off automatic 400 code response on error to enable error logging in controllers
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
@@ -55,8 +60,6 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
                 c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             });
-
-            
 
             services.AddSwaggerExamplesFromAssemblyOf<ApplicantExample>();
 
@@ -77,7 +80,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
                     //.UseDefaultLanguage(languageConfig.DefaultLanguage)
                     .UseFallbackLanguage(languageConfig.FallbackLanguage);
             });
-            
+
             // Working repository
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
 
@@ -97,8 +100,6 @@ namespace Hsf.ApplicationProcess.August2020.Web
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            
 
             //app.UseAuthorization();
 

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Hsf.ApplicationProcess.August2020.Web.Extensions
+﻿namespace Hsf.ApplicationProcess.August2020.Domain.Extensions
 {
     public static class StringExtensions
     {

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using FluentValidation.Validators;
 
-namespace Hsf.ApplicationProcess.August2020.Web.Validators
+namespace Hsf.ApplicationProcess.August2020.Domain.Validators
 {
     public class EmailValidator : PropertyValidator
     {
