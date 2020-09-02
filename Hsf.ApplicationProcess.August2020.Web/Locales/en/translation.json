@@ -4,7 +4,7 @@
     "update_failed_no_id": "Update failed - there is no applicant with ID {{id}}.",
     "delete_failed_no_id": "Deletion failed - there is no applicant with ID {{id}}.",
     "add_failed_db_error": "Could not add new applicant to database!",
-    "common_id_negative": "ID cannot be negative."
+    "common_id_negative": "ID cannot be negative." 
   },
 
   "crud_ok": {

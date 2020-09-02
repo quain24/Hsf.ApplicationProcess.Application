@@ -1,18 +1,19 @@
-﻿using Hsf.ApplicationProcess.August2020.Data.Repositories;
+﻿using AutoMapper;
+using Hsf.ApplicationProcess.August2020.Data.Repositories;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
+using Hsf.ApplicationProcess.August2020.Web.DTO;
 using Hsf.ApplicationProcess.August2020.Web.Extensions;
 using Hsf.ApplicationProcess.August2020.Web.SwaggerExamples;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
-using AutoMapper;
-using Hsf.ApplicationProcess.August2020.Web.DTO;
-using Microsoft.Extensions.Localization;
 
 namespace Hsf.ApplicationProcess.August2020.Web.Controllers
 {
@@ -24,14 +25,16 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         private readonly IApplicantRepository _repository;
         private readonly ILogger<ApplicantsController> _logger;
         private readonly IMapper _mapper;
-        private readonly IStringLocalizer<ApplicantsController> _localizer;
+        private readonly IStringLocalizer _localizer;
+        private readonly IStringLocalizer _logMessages;
 
-        public ApplicantsController(IApplicantRepository repository, ILogger<ApplicantsController> logger, IMapper mapper, IStringLocalizer<ApplicantsController> localizer)
+        public ApplicantsController(IApplicantRepository repository, ILogger<ApplicantsController> logger, IMapper mapper, IStringLocalizer localizer)
         {
             _repository = repository;
             _logger = logger;
             _mapper = mapper;
             _localizer = localizer;
+            _logMessages = localizer.WithCulture(CultureInfo.CreateSpecificCulture("en-EN"));
         }
 
         /// <summary>
@@ -46,14 +49,12 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
             {
-                var errMsg = _localizer["crud_errors.get_failed", new{id}].Value;
-                _logger.LogInformation(errMsg);
-                return NotFound(errMsg);
+                _logger.LogInformation(_logMessages["crud_errors.get_failed", new { id }].Value);
+                return NotFound(_localizer["crud_errors.get_failed", new { id }].Value);
             }
 
-            var okMsg = _localizer["crud_ok.get_returned", new {id}].Value;
-            _logger.LogInformation(okMsg);
-            return Ok(okMsg);
+            _logger.LogInformation(_logMessages["crud_ok.get_returned", new { id }].Value);
+            return Ok(_localizer["crud_ok.get_returned", new { id }].Value);
         }
 
         ///<summary>
@@ -67,8 +68,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(string))]
         public async Task<ActionResult<Applicant>> UpdateApplicant([FromHeader][Range(0, int.MaxValue)] int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
         {
-            var applicant =_mapper.Map<Applicant>(applicantUpdateDto);
-            applicant.ID = id;
+            var applicant = _mapper.Map<Applicant>(applicantUpdateDto);
 
             if (!ModelState.IsValid)
             {
@@ -76,17 +76,17 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
                 return BadRequest(ModelState);
             }
 
+            applicant.ID = id;
 
             if (await _repository.UpdateApplicantAsync(id, applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation(_localizer["crud_ok.update_updated", new{id = applicant.ID}]);
+                _logger.LogInformation(_logMessages["crud_ok.update_updated", new { id = applicant.ID }]);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
 
-            var msg = _localizer["crud_errors.update_failed_no_id", new {id}].Value;
-            _logger.LogInformation(msg);
-            return NotFound(msg);
+            _logger.LogError(_logMessages["crud_errors.update_failed_no_id", new { id }].Value);
+            return NotFound(_localizer["crud_errors.update_failed_no_id", new { id }].Value);
         }
 
         ///<summary>
@@ -109,13 +109,12 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             if (await _repository.AddNewApplicantAsync(applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation(_localizer["crud_ok.add_success", new {id = applicant.ID}].Value);
+                _logger.LogInformation(_logMessages["crud_ok.add_success", new { id = applicant.ID }].Value);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
-
-            var msg = _localizer["crud_errors.add_failed_db_error"].Value;
-            _logger.LogError(msg);
-            return BadRequest(msg);
+            
+            _logger.LogError(_logMessages["crud_errors.add_failed_db_error"].Value);
+            return BadRequest(_localizer["crud_errors.add_failed_db_error"].Value);
         }
 
         /// <summary>
@@ -129,21 +128,18 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         {
             if (id < 0)
             {
-                var msg = _localizer["crud_errors.common_id_negative"].Value;
-                _logger.LogError(msg);
-                return BadRequest(msg);
+                _logger.LogError(_logMessages["crud_errors.common_id_negative"].Value);
+                return BadRequest(_localizer["crud_errors.common_id_negative"].Value);
             }
 
             if (await _repository.DeleteApplicantAsync(id))
             {
-                var msgOk = _localizer["crud_ok.delete_success", new {id}].Value;
-                _logger.LogInformation(msgOk);
-                return Ok(msgOk);
+                _logger.LogInformation(_logMessages["crud_ok.delete_success", new { id }].Value);
+                return Ok(_localizer["crud_ok.delete_success", new { id }].Value);
             }
-
-            var msgError = _localizer["crud_errors.delete_failed_no_id", new {id}].Value;
-            _logger.LogInformation(msgError);
-            return NotFound(msgError);
+            
+            _logger.LogError(_logMessages["crud_errors.delete_failed_no_id", new { id }].Value);
+            return NotFound(_localizer["crud_errors.delete_failed_no_id", new { id }].Value);
         }
     }
 }

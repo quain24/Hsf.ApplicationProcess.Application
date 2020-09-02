@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
 
@@ -11,11 +12,10 @@ namespace Hsf.ApplicationProcess.August2020.Web.Extensions
     {
         public static void LogAllErrorsFrom(this ILogger logger, string nameOfActionCausingErrors, ModelStateDictionary modelState)
         {
-            var logEntry = $"Controller action \"{nameOfActionCausingErrors}\" was called and executed with errors:";
+            var logEntry = $"ERROR - Controller action \"{nameOfActionCausingErrors}\" was called with bad parameters:";
+            var parameterList = modelState.Keys.ToList();
 
-            logEntry = modelState.Values.SelectMany(state => state.Errors)
-                .Aggregate(logEntry, (current, error) => current + $"\n{error.ErrorMessage}");
-
+            logEntry = parameterList.Aggregate(logEntry, (current, errorType) => current + $" {errorType},").TrimEnd(',');
             logger.LogError(logEntry);
         }
     }
