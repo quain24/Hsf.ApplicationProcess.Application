@@ -11,7 +11,6 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -47,11 +46,11 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             var applicant = await _repository.GetApplicantByIdAsync(id);
             if (applicant is null)
             {
-                _logger.LogError($"Tried to retrieve non existing applicant - ID {id}");
+                _logger.LogError("Tried to retrieve non existing applicant - ID {id}", id);
                 return NotFound(_localizer["crud_errors.get_failed", new { id }].Value);
             }
 
-            _logger.LogInformation($"Returned applicant with ID {id}");
+            _logger.LogInformation("Returned applicant with ID {id}", id);
             return Ok(applicant);
         }
 
@@ -79,11 +78,11 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             if (await _repository.UpdateApplicantAsync(id, applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation($"Applicant updated - ID {applicant.ID}");
+                _logger.LogInformation("Applicant updated - ID {id}", applicant.ID);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
 
-            _logger.LogError($"No applicant with ID {id}");
+            _logger.LogError("No applicant with ID {id}", id);
             return NotFound(_localizer["crud_errors.update_failed_no_id", new { id }].Value);
         }
 
@@ -107,10 +106,10 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             if (await _repository.AddNewApplicantAsync(applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation($"New applicant added - ID {applicant.ID}");
+                _logger.LogInformation("New applicant added - ID {}", applicant.ID);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
-            
+
             _logger.LogError("Could not add new applicant to database!");
             return BadRequest(_localizer["crud_errors.add_failed_db_error"].Value);
         }
@@ -132,11 +131,11 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
 
             if (await _repository.DeleteApplicantAsync(id))
             {
-                _logger.LogInformation($"Deleted applicant - ID {id}");
+                _logger.LogInformation("Deleted applicant - ID {id}", id);
                 return Ok(_localizer["crud_ok.delete_success", new { id }].Value);
             }
-            
-            _logger.LogError($"Tried to delete non existing applicant - ID {id}");
+
+            _logger.LogError("Tried to delete non existing applicant - ID {id}", id);
             return NotFound(_localizer["crud_errors.delete_failed_no_id", new { id }].Value);
         }
     }

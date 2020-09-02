@@ -14,9 +14,10 @@ namespace Hsf.ApplicationProcess.August2020.Web.Extensions
         {
             var logEntry = $"ERROR - Controller action \"{nameOfActionCausingErrors}\" was called with bad parameters:";
             var parameterList = modelState.Keys.ToList();
+            parameterList.Remove("");
 
-            logEntry = parameterList.Aggregate(logEntry, (current, errorType) => current + $" {errorType},").TrimEnd(',');
-            logger.LogError(logEntry);
+            //logEntry = parameterList.Aggregate(logEntry, (current, errorType) => current + $" {errorType},").TrimEnd(',');
+            logger.LogError(logEntry+"{parameterList}", parameterList);
         }
     }
 }
