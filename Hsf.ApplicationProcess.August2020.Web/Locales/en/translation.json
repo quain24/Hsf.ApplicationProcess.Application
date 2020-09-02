@@ -10,7 +10,7 @@
   "crud_ok": {
     "get_returned": "Found and returned applicant with ID {{id}}.",
     "update_updated": "Applicant updated: ID - {{id}}.",
-    "add_success": "New applicant added: ID - {id}}",
+    "add_success": "New applicant added: ID - {{id}}",
     "delete_success": "Applicant with id {{id}} has been deleted." 
   },
 

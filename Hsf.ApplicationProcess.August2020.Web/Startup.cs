@@ -55,9 +55,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
                 c.ExampleFilters();
                 c.EnableAnnotations();
                 c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "HSFApi.xml"));
-
                 c.AddFluentValidationRules();
-
                 c.OperationFilter<AppendAuthorizeToSummaryOperationFilter>();
             });
 
