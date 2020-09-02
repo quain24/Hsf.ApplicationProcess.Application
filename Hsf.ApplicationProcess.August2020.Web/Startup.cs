@@ -83,7 +83,7 @@ namespace Hsf.ApplicationProcess.August2020.Web
 
             // Working repository
             services.AddScoped<IApplicantRepository, InMemoryRepository>();
-
+            
             // Disable translations in fluent validation
             //ValidatorOptions.Global.LanguageManager.Enabled = false;
         }
