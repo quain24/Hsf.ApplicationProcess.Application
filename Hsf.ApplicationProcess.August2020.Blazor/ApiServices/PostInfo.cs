@@ -7,12 +7,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {
     public class PostInfo
     {
-        public bool Success { get; }
+        public bool IsSuccess { get; }
         public ResponseCodes ResponseCodes { get; }
 
         public PostInfo(bool success, ResponseCodes responseCodes)
         {
-            Success = success;
+            IsSuccess = success;
             ResponseCodes = responseCodes;
         }
     }

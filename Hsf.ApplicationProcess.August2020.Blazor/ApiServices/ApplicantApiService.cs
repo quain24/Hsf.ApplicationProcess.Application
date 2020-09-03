@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -19,13 +21,31 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         public async Task<Applicant> GetApplicantById(int id, CancellationToken token)
         {
-            var output = await _client.GetFromJsonAsync<Applicant>(_client.BaseAddress + $"/{id}", new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, token);
+            Applicant output;
+            try
+            {
+                output = await _client.GetFromJsonAsync<Applicant>(_client.BaseAddress + $"/{id}",
+                    new JsonSerializerOptions {PropertyNameCaseInsensitive = true}, token);
+            }
+            catch (Exception)
+            {
+                return new Applicant();
+            }
             return output;
         }
 
         public async Task<PostInfo> InsertNewApplicant(ApplicantInsertDTO newApplicant, CancellationToken token)
         {
-            var result = await _client.PostAsJsonAsync(_client.BaseAddress, newApplicant, token);
+            HttpResponseMessage result = null;
+            try
+            {
+                result = await _client.PostAsJsonAsync(_client.BaseAddress, newApplicant, token);
+            }
+            catch(Exception ex)
+            {
+                return NetworkConnectionError(ex);
+            }
+
             if (result.IsSuccessStatusCode)
                 return Success();
 
@@ -37,6 +57,13 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
         private PostInfo Success() => new PostInfo(true, new ResponseCodes());
 
         private PostInfo Failure(ResponseCodes responseCodes) => new PostInfo(false, responseCodes);
+
+        private PostInfo NetworkConnectionError(Exception ex)
+        {
+            var codes = new ResponseCodes();
+            codes.AddCode("Connection Error", ex.Message, ex.StackTrace);
+            return new PostInfo(false, codes);
+        }
 
         private async Task<ResponseCodes> ExtractErrorCodes(HttpResponseMessage fromMessage, CancellationToken token)
         {

@@ -1,6 +1,5 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -13,7 +12,12 @@
 </head>
 
 <body>
-    <app>Loading...</app>
+    <app>
+        <div style="position: absolute; top: 30vh; width: 100%; text-align: center">
+            <h1>HSF Applicant Demo</h1>
+            <p>The application is loading...</p>
+        </div>
+    </app>
 
     <div id="blazor-error-ui">
         An unhandled error has occurred.
@@ -23,5 +27,4 @@
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
-
 </html>
