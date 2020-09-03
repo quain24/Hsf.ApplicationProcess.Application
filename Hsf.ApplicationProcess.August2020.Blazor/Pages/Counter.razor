@@ -14,11 +14,14 @@
 <p>applicant: @applicant?.FamilyName</p>
 <p>Status</p>
 <ul>
-    @foreach (var entry in errors)
+    @if (errors != null)
     {
-        foreach (var msg in entry.Value)
+        @foreach (var entry in errors?.ResponseCodes)
         {
-            <li>@entry.Key - @msg</li>
+            foreach (var msg in entry.Value)
+            {
+                <li>@entry.Key - @msg</li>
+            }
         }
     }
 </ul>
@@ -29,19 +32,16 @@
     private int currentCount = 0;
     private Applicant applicant;
 
-    private Dictionary<string, List<string>> errors = new Dictionary<string, List<string>>();
+    private PostInfo errors;
 
     private async Task IncrementCount()
     {
         var apl = new ApplicantInsertDTO
         {
             familyName = "Kowalski",
-            address = " 16/2",
+            address = "Sarmacka 16/2",
             age = 30,
-            countryOfOrigin = "Po2land",
-            emailAddress = "kowalskigmail.com",
-            hired = false,
-            name = "Janusz"
+            countryOfOrigin = "Poland"
         };
 
         errors = await Api.InsertNewApplicant(apl, CancellationToken.None);

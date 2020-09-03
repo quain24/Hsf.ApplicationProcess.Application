@@ -23,16 +23,31 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             return output;
         }
 
-        public async Task<Dictionary<string, List<string>>> InsertNewApplicant(ApplicantInsertDTO newApplicant, CancellationToken token)
+        public async Task<PostInfo> InsertNewApplicant(ApplicantInsertDTO newApplicant, CancellationToken token)
         {
-            var result = await _client.PostAsJsonAsync<ApplicantInsertDTO>(_client.BaseAddress, newApplicant, token);
+            var result = await _client.PostAsJsonAsync(_client.BaseAddress, newApplicant, token);
             if (result.IsSuccessStatusCode)
-                return new Dictionary<string, List<string>> {{"ok", new List<string>{"ok"}}};
+                return Success();
 
-            var errors = new Dictionary<string, List<string>>();
-            await using var str = await result.Content.ReadAsStreamAsync();
-            errors = await JsonSerializer.DeserializeAsync<Dictionary<string, List<string>>>(str, new JsonSerializerOptions(), token);
-            return errors;
+            var responseCodes = await ExtractErrorCodes(result, token);
+
+            return Failure(responseCodes);
+        }
+
+        private PostInfo Success() => new PostInfo(true, new ResponseCodes());
+
+        private PostInfo Failure(ResponseCodes responseCodes) => new PostInfo(false, responseCodes);
+
+        private async Task<ResponseCodes> ExtractErrorCodes(HttpResponseMessage fromMessage, CancellationToken token)
+        {
+            await using var str = await fromMessage.Content.ReadAsStreamAsync();
+            var errors = await JsonSerializer.DeserializeAsync<Dictionary<string, List<string>>>(str, new JsonSerializerOptions(), token);
+
+            var responseCodes = new ResponseCodes();
+            foreach (var (key, value) in errors)
+                responseCodes.AddCode(key, value.ToArray());
+
+            return responseCodes;
         }
     }
 }
