@@ -1,0 +1,32 @@
+﻿@page "/counter"
+@using System.Threading
+@using System.Diagnostics
+@using System.Net.Http.Headers
+@using System.Text.Json
+@using BlazorApp1.ApiServices
+@using Hsf.ApplicationProcess.August2020.Domain.Models
+
+@inject ApplicantApiService Api
+
+<h1>Counter</h1>
+
+<p>Current count: @currentCount</p>
+<p>applicant: @applicant?.FamilyName</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@code {
+    private int currentCount = 0;
+    private Applicant applicant;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        applicant = await Api.GetApplicantById(3, CancellationToken.None);
+    }
+}

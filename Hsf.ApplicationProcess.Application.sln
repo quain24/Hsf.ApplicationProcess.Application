@@ -14,7 +14,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Blazor", "Hsf.ApplicationProcess.August2020.Blazor\Hsf.ApplicationProcess.August2020.Blazor.csproj", "{12905AA4-142D-4392-871C-F72D514D588B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hsf.ApplicationProcess.August2020.Blazor", "Hsf.ApplicationProcess.August2020.Blazor\Hsf.ApplicationProcess.August2020.Blazor.csproj", "{65A3EEE9-9BDC-4AAC-95E2-FDBDC5CB9DAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,10 +34,10 @@ Global
 		{C06240B1-6733-4057-AA59-6141745AD779}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C06240B1-6733-4057-AA59-6141745AD779}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C06240B1-6733-4057-AA59-6141745AD779}.Release|Any CPU.Build.0 = Release|Any CPU
-		{12905AA4-142D-4392-871C-F72D514D588B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{12905AA4-142D-4392-871C-F72D514D588B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{12905AA4-142D-4392-871C-F72D514D588B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{12905AA4-142D-4392-871C-F72D514D588B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{65A3EEE9-9BDC-4AAC-95E2-FDBDC5CB9DAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65A3EEE9-9BDC-4AAC-95E2-FDBDC5CB9DAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65A3EEE9-9BDC-4AAC-95E2-FDBDC5CB9DAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65A3EEE9-9BDC-4AAC-95E2-FDBDC5CB9DAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

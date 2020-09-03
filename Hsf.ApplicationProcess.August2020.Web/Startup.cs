@@ -45,6 +45,18 @@ namespace Hsf.ApplicationProcess.August2020.Web
                     services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
                 });
 
+
+            services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", options =>
+                {
+                    options.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
+
             // Turned off automatic 400 code response on error to enable error logging in controllers
             services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 
@@ -98,6 +110,8 @@ namespace Hsf.ApplicationProcess.August2020.Web
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseCors("AllowOrigin");
 
             //app.UseAuthorization();
 

@@ -3,13 +3,13 @@ using System.Net.Http;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Text;
-using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
+using BlazorApp1.ApiServices;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Hsf.ApplicationProcess.August2020.Blazor
+namespace BlazorApp1
 {
     public class Program
     {
@@ -22,6 +22,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
 
             builder.Services.AddScoped<ApplicantApiService>();
 
+            //builder.Services.AddHttpClient<ApplicantApiService>(client =>
+            //{
+            //    client.BaseAddress = new Uri("https://localhost:5011/api/applicants");
+            //});
+
+            await builder.Build().RunAsync();
             await builder.Build().RunAsync();
         }
     }
