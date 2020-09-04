@@ -20,8 +20,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
 
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") });
 
-            builder.Services.AddScoped<ApplicantApiService>();
-
+            builder.Services.AddScoped<ApplicantApiService>(sp => new ApplicantApiService(sp.GetRequiredService<HttpClient>()));
+            //builder.Services.AddScoped(sp => new ApplicantApiService(new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") }));
+            
             await builder.Build().RunAsync();
         }
     }

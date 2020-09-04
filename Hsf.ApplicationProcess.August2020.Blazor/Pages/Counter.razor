@@ -16,7 +16,7 @@
 <ul>
     @if (errors != null)
     {
-        @foreach (var entry in errors?.ResponseCodes)
+        @foreach (var entry in errors.ResponseCodes)
         {
             foreach (var msg in entry.Value)
             {
