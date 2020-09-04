@@ -1,0 +1,46 @@
+﻿@page "/addapplicant"
+@using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
+<link rel="stylesheet" href="css/addApplicant.css" />
+
+<div class="mat-elevation-z3 main-container">
+    <h3>Add new applicant to database</h3>
+
+    <EditForm Model="applicant">
+        <div class="mat-layout-grid mat-layout-grid-allign-middle">
+            <div class="mat-layout-grid-inner">
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                    <MatTextField Label="Name" @bind-Value="@applicant.name"></MatTextField>
+                    <MatTextField Label="Family name" @bind-Value="@applicant.familyName"></MatTextField>
+                    <MatTextField Label="Address" @bind-Value="@applicant.address"></MatTextField>
+                    <MatTextField Label="Country" @bind-Value="@applicant.countryOfOrigin"></MatTextField>
+                </div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1"></div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                    <MatNumericUpDownField Label="Age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField>
+                    <MatTextField Label="Email address" @bind-Value="@applicant.emailAddress"></MatTextField>
+                    <br />
+                    <MatSlideToggle Label="Status" @bind-Value="@applicant.hired"></MatSlideToggle>
+                </div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
+                    <MatButton Label="Reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
+                </div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+@code {
+    ApplicantInsertDTO applicant = new ApplicantInsertDTO();
+
+    private bool IsResetDisabled => string.IsNullOrEmpty(applicant.address) &&
+                                    string.IsNullOrEmpty(applicant.countryOfOrigin) &&
+                                    string.IsNullOrEmpty(applicant.emailAddress) &&
+                                    string.IsNullOrEmpty(applicant.familyName) &&
+                                    string.IsNullOrEmpty(applicant.name) &&
+                                    (applicant.hired == false || applicant.hired is null) &&
+                                    applicant.age == 0;
+
+    private void ResetData() => applicant = new ApplicantInsertDTO();
+
+
+
+}

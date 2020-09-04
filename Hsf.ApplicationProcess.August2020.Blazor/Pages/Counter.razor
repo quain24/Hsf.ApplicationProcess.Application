@@ -25,8 +25,7 @@
         }
     }
 </ul>
-
-<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+<MatButton OnClick="@IncrementCount" Label="Click Me" Outlined="true" TrailingIcon="favorite"></MatButton>
 
 @code {
     private int currentCount = 0;

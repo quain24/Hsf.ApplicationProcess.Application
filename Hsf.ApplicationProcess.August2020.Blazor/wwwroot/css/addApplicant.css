@@ -1,0 +1,16 @@
+﻿*{
+    margin: 0;
+    padding: 0;
+}
+
+.main-container{
+    padding: 45px;
+    margin: 50px;
+    position: center;
+}
+
+.min-field-size {
+    min-width: 200px;
+    max-width: 200px;
+}
+

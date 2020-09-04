@@ -1,13 +1,9 @@
-using System;
-using System.Net.Http;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Text;
 using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {
@@ -18,11 +14,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("app");
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") });
+            builder.Services.AddHttpClient<ApplicantApiService>();
 
-            builder.Services.AddScoped<ApplicantApiService>(sp => new ApplicantApiService(sp.GetRequiredService<HttpClient>()));
-            //builder.Services.AddScoped(sp => new ApplicantApiService(new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") }));
-            
+            // -- Left for publishing - Error - blazor wasm cannot resolve HttpFactory - issue made on github
+            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") });
+            //builder.Services.AddScoped<ApplicantApiService>();
+
             await builder.Build().RunAsync();
         }
     }

@@ -17,6 +17,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
         public ApplicantApiService(HttpClient client)
         {
             _client = client;
+            _client.BaseAddress = new Uri("https://localhost:5011/api/applicants");
         }
 
         public async Task<Applicant> GetApplicantById(int id, CancellationToken token)
@@ -36,7 +37,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         public async Task<PostInfo> InsertNewApplicant(ApplicantInsertDTO newApplicant, CancellationToken token)
         {
-            HttpResponseMessage result = null;
+            HttpResponseMessage result;
             try
             {
                 result = await _client.PostAsJsonAsync(_client.BaseAddress, newApplicant, token);

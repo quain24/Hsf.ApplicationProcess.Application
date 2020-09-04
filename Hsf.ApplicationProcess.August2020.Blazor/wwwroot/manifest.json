@@ -1,10 +1,10 @@
 {
-  "name": "Hsf.ApplicationProcess.August2020.Blazor",
-  "short_name": "Hsf.ApplicationProcess.August2020.Blazor",
+  "name": "HSF Applicant Demo",
+  "short_name": "HSF",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#03173d",
+  "background_color": "#78706e",
+  "theme_color": "#29d6d3",
   "icons": [
     {
       "src": "icon-512.png",
