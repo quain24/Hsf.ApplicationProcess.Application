@@ -89,7 +89,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         ///<summary>
         /// Adds new applicant to database.
         /// </summary>
-        /// <param name="applicant">New applicant data in json format</param>
+        /// <param name="applicantPostDto">New applicant data in json format</param>
         [HttpPost]
         [SwaggerRequestExample(typeof(ApplicantNoIdDTO), typeof(ApplicantNoIdDTOExample))]
         [SwaggerResponse((int)HttpStatusCode.Created, "Applicant has been created.", typeof(Applicant))]
@@ -106,7 +106,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
             if (await _repository.AddNewApplicantAsync(applicant))
             {
                 await _repository.SaveChangesAsync();
-                _logger.LogInformation("New applicant added - ID {}", applicant.ID);
+                _logger.LogInformation("New applicant added - ID {id}", applicant.ID);
                 return CreatedAtAction(nameof(GetApplicantById), new { id = applicant.ID }, applicant);
             }
 

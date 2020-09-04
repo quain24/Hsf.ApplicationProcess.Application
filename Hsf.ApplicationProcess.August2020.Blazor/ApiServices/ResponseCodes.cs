@@ -10,13 +10,15 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
     {
         private readonly ConcurrentDictionary<string, List<string>> _infos = new ConcurrentDictionary<string, List<string>>();
 
-        public void AddCode(string name, params string[] infos)
+        public ResponseCodes AddCode(string name, params string[] infos)
         {
             if (infos.IsNullOrEmpty())
                 throw new ArgumentNullException(nameof(infos));
 
             foreach (var info in infos)
                 _infos.AddOrUpdate(name, _ => AddFactory(info), (_, l) => UpdateFactory(info, l));
+
+            return this;
         }
 
         private List<string> AddFactory(string additionalCode)

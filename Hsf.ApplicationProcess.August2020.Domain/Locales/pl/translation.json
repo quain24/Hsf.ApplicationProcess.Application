@@ -1,0 +1,21 @@
+{
+  "crud_errors": {
+    "get_failed": "Zapytanie nieudane - brak aplikanta o ID {{id}}",
+    "update_failed_no_id": "Aktualizacja nieudana - brak aplikanta o ID {{id}}.",
+    "delete_failed_no_id": "Brak aplikanta o ID {{id}}.",
+    "add_failed_db_error": "Nie udało dodać się aplikanta do bazy danych!",
+    "common_id_negative": "ID nie może być ujemne."
+  },
+
+  "crud_ok": {
+    "get_returned": "Znaleziono i zwrócono aplikanta o ID {{id}}.",
+    "update_updated": "Aplikant zaktualizowany: ID - {{id}}.",
+    "add_success": "Nowy aplikant dodany: ID - {{id}}",
+    "delete_success": "Aplikant o id {{id}} został usunięty."
+  },
+
+  "validation": {
+    "err_no_such_country": "Wyraz '{{countryName}}' nie jest poprawną nawą kraju.",
+    "err_bad_email_format": "Podany email ma nieprawidłowy format."
+  }
+}
