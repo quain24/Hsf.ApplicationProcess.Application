@@ -7,6 +7,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
 
         public string this[string key] => global::Toolbelt.Blazor.I18nText.I18nTextExtensions.GetFieldValue(this, key);
 
+        /// <summary>"This web address does not exist, sorry."</summary>
+        public string app_err_address_not_found;
+
         /// <summary>"Reset"</summary>
         public string button_l_reset;
 
@@ -39,6 +42,15 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
 
         /// <summary>"Add new applicant to the database"</summary>
         public string header_new_applicant;
+
+        /// <summary>"Review applicants"</summary>
+        public string header_view_applicants;
+
+        /// <summary>"Add Applicant"</summary>
+        public string menu_add_applicant;
+
+        /// <summary>"View applicant data"</summary>
+        public string menu_get_by_id;
 
         /// <summary>"Success!"</summary>
         public string toast_h_applicant_added;

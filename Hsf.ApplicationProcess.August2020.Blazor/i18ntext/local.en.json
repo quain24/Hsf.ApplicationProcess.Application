@@ -1,5 +1,12 @@
 {
+  "app_err_address_not_found": "This web address does not exist, sorry.",
+
+  "menu_add_applicant": "Add Applicant",
+  "menu_get_by_id": "View applicant data",
+
   "header_new_applicant": "Add new applicant to the database",
+  "header_view_applicants": "Review applicants",
+
   "field_name": "Name",
   "field_surname": "Family name",
   "field_address": "Address",

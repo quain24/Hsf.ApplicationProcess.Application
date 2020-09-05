@@ -1,0 +1,13 @@
+﻿@page "/getbyid"
+@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+<h3>@_translator.header_view_applicants</h3>
+<MatDivider></MatDivider>
+
+@code {
+    private I18nText.local _translator = new I18nText.local();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
+    }
+}

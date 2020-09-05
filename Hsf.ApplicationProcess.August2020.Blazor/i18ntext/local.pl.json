@@ -1,5 +1,12 @@
 {
+  "app_err_address_not_found": "Niestety, wpisany adres nie istnieje.",
+
+  "menu_add_applicant": "Dodaj aplikanta",
+  "menu_get_by_id": "Przeglądaj aplikantów",
+
   "header_new_applicant": "Dodaj nowego aplikanta do bazy",
+  "header_view_applicants": "Przeglądaj aplikantów",
+
   "field_name": "Imię",
   "field_surname": "Nazwisko",
   "field_address": "Adres",

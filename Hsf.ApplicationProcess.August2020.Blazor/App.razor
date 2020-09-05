@@ -1,3 +1,4 @@
+@inject Toolbelt.Blazor.I18nText.I18nText I18nText
 <MatThemeProvider Theme="@_hsfTheme">
     <MatToastContainer />
     <Router AppAssembly="@typeof(Program).Assembly">
@@ -6,7 +7,7 @@
         </Found>
         <NotFound>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p>Sorry, there's nothing at this address.</p>
+                <p>@_translator.app_err_address_not_found</p>
             </LayoutView>
         </NotFound>
     </Router>
@@ -19,4 +20,11 @@
         Primary = "#0097a7",
         Secondary = "#00897b"
     };
+
+    private I18nText.local _translator = new I18nText.local();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
+    }
 }

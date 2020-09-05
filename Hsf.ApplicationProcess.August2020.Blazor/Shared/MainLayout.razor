@@ -1,13 +1,15 @@
 ﻿@inherits LayoutComponentBase
-    <link rel="stylesheet" href="css/header.css" />
+@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+
+<link rel="stylesheet" href="css/header.css" />
 
 <div class="sidebar">
-    <NavMenu />
+    <NavMenu></NavMenu>
 </div>
 
-<div class="main">
-    <div style="margin-top: 20px">
-        <h1>HSF Applicant demo app</h1>
+<div class="main" style="min-width: 500px">
+    <div class="header">
+        <h1>HSF e-commerce Applicant demo app</h1>
     </div>
     <div class="mat-elevation-z3 main-container">
         <div class="content px-4">
@@ -15,3 +17,13 @@
         </div>
     </div>
 </div>
+
+@code
+{
+    private I18nText.local _translator = new I18nText.local();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
+    }
+}

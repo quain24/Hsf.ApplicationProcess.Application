@@ -1,4 +1,18 @@
-﻿.h1 {
-    text-align-all: center;
+﻿@import url('https://fonts.googleapis.com/css?family=Pt+Sans&display=swap');
+.header {
+    background-color: #0097a7;
+    min-height: 120px;
+    padding-left: 15px;
+    vertical-align: central;
 }
 
+.header h1 {
+    margin: 0;
+    height: 100px;
+    padding-top: 50px;
+    padding-bottom: 50px;
+    color: white;
+    text-shadow: 1px 1px 2px #06706e;
+    font-family: 'PT Sans', sans-serif;
+    overflow: hidden;
+}

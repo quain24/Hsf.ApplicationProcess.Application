@@ -1,10 +1,8 @@
-﻿@*@page "/addapplicant"*@
-@page "/"
+﻿@page "/"
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
 @using System.Threading
 @using System.Timers
-@using FluentValidation
 @using FluentValidation.Results
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
 
@@ -30,7 +28,7 @@
                 <p><MatTextField Label="@_translator.field_address" @bind-Value="@applicant.address"></MatTextField></p>
                 <p><ValidationMessage For="@(() => applicant.address)" /></p>
                 <p><MatTextField Label="@_translator.field_country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
-                <p style="visibility: @countryErr_visibility">@country_err_msg</p>
+                <p id="err-container" style="visibility: @countryErr_visibility;">@country_err_msg</p>
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
@@ -49,7 +47,7 @@
 </EditForm>
 @code {
 
-    ApplicantInsertModel applicant = new ApplicantInsertModel() { address = "adressadress", age = 25, emailAddress = "heniuw@wp.pl", familyName = "Wiśniewski", name = "Endrju" };
+    ApplicantInsertModel applicant = new ApplicantInsertModel();
 
     private bool IsResetDisabled => string.IsNullOrEmpty(applicant.address) &&
                                     string.IsNullOrEmpty(applicant.countryOfOrigin) &&
@@ -60,29 +58,23 @@
 
     // Workaround for localized country err msg
     // resolving and di at start conflicts with code sharing
-    private string countryErr_visibility = "hidden";
+    private string countryErr_visibility;
     private string country_err_msg;
 
     private bool IsSubmitDisabled = true;
 
     private System.Timers.Timer _guiUpdateTimer;
-    I18nText.local _translator = new I18nText.local();
+    private I18nText.local _translator = new I18nText.local();
 
     private void ResetData()
     {
         applicant = new ApplicantInsertModel();
         IsSubmitDisabled = true;
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Val.CascadeMode = CascadeMode.Stop;
+        HideCountryErrBox();
     }
 
     // Asynchronous fluent validation is not supported in blazor WASM at this moment
     // Workaround is needed - force refresh so gui can be updated in case of validation over api
-    private System.Timers.Timer timer;
     protected override async Task OnInitializedAsync()
     {
         _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
@@ -92,9 +84,10 @@
         _guiUpdateTimer.Enabled = true;
         _guiUpdateTimer.Start();
         country_err_msg = _translator.field_err_country;
+        HideCountryErrBox();
     }
 
-    private void OnTimedEvent(Object source, ElapsedEventArgs e)
+    private void OnTimedEvent(object source, ElapsedEventArgs e)
     {
         Task.Run(async () =>
         {
@@ -113,11 +106,14 @@
 
     private void EnableIfNeededCountryErrMsg(ValidationResult result)
     {
-        if (result.Errors.Any(c => c.ErrorCode == "country"))
-            countryErr_visibility = "visible";
+        if (result.Errors.Any(c => c.ErrorCode == "country") && applicant.countryOfOrigin.Length > 0)
+            ShowCountryErrBox();
         else
-            countryErr_visibility = "hidden";
+            HideCountryErrBox();
     }
+
+    private void HideCountryErrBox() => countryErr_visibility = "hidden";
+    private void ShowCountryErrBox() => countryErr_visibility = "visible";
 
     private async Task<PostInfo> InsertApplicant()
     {

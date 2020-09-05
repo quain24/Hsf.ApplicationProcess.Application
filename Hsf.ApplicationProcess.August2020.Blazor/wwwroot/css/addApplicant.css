@@ -3,6 +3,11 @@
     padding: 0;
 }
 
+#err-container {
+    font-size: 12pt;
+    color: red;
+}
+
 .main-container{
     padding: 45px;
     margin: 50px;
