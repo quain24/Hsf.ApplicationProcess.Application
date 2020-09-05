@@ -16,6 +16,8 @@
   "field_status_hired": "Hired",
   "button_l_submit": "Submit",
   "button_l_reset": "Reset",
+  "button_l_next": "Next",
+  "button_l_previous": "Previous",
 
   "field_err_country": "Such country does not exist.",
 

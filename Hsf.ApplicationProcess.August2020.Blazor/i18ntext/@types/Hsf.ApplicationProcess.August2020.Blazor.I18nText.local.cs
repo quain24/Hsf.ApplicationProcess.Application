@@ -10,6 +10,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
         /// <summary>"This web address does not exist, sorry."</summary>
         public string app_err_address_not_found;
 
+        /// <summary>"Next"</summary>
+        public string button_l_next;
+
+        /// <summary>"Previous"</summary>
+        public string button_l_previous;
+
         /// <summary>"Reset"</summary>
         public string button_l_reset;
 

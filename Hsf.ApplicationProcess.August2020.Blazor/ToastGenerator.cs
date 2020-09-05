@@ -17,7 +17,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
 
         public void DisplayInfo(string title, string message = "")
         {
-            _toaster.Add(message, MatToastType.Info, title, null, config => config.RequireInteraction = false);
+            _toaster.Add(message, MatToastType.Success, title, null, config => config.RequireInteraction = false);
         }
 
         public void DisplayConnectionError(string title, string message = "", Action retryAction = null)
@@ -48,7 +48,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                 message += tmp + " ";
             }
 
-            _toaster.Add(messageHeader + " " + message, type, messageHeader);
+            _toaster.Add(title + " " + message, type, messageHeader);
 
         }
     }

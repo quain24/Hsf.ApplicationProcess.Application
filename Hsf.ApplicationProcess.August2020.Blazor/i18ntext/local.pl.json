@@ -16,6 +16,8 @@
   "field_status_hired": "Zatrudniony",
   "button_l_submit": "Wyślij",
   "button_l_reset": "Wyczyść",
+  "button_l_next": "Dalej",
+  "button_l_previous": "Wstecz", 
 
   "field_err_country": "Podany kraj nie istnieje",
 

@@ -4,15 +4,16 @@
 @using System.Threading
 @using System.Timers
 @using FluentValidation.Results
+@using Hsf.ApplicationProcess.August2020.Blazor.Extensions
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
 
 @inject ApplicantInsertModelValidator Val
 @inject ApplicantApiService ApiService
 @inject ToastGenerator ToastGenerator
-@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+@*@inject Toolbelt.Blazor.I18nText.I18nText I18nText*@
 
 <link rel="stylesheet" href="css/addApplicant.css" />
-<h3>@_translator.header_new_applicant</h3>
+<h3>@Translator.header_new_applicant</h3>
 <MatDivider></MatDivider>
 
 <EditForm Model="applicant">
@@ -21,55 +22,49 @@
     <div class="mat-layout-grid mat-layout-grid-align-left">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatTextField Label="@_translator.field_name" @bind-Value="@applicant.name"></MatTextField></p>
+                <p><MatTextField Label="@Translator.field_name" @bind-Value="@applicant.name"></MatTextField></p>
                 <p><ValidationMessage For="@(() => applicant.name)" /></p>
-                <p><MatTextField Label="@_translator.field_surname" @bind-Value="@applicant.familyName"></MatTextField></p>
+                <p><MatTextField Label="@Translator.field_surname" @bind-Value="@applicant.familyName"></MatTextField></p>
                 <p><ValidationMessage For="@(() => applicant.familyName)" /></p>
-                <p><MatTextField Label="@_translator.field_address" @bind-Value="@applicant.address"></MatTextField></p>
+                <p><MatTextField Label="@Translator.field_address" @bind-Value="@applicant.address"></MatTextField></p>
                 <p><ValidationMessage For="@(() => applicant.address)" /></p>
-                <p><MatTextField Label="@_translator.field_country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
-                <p id="err-container" style="visibility: @countryErr_visibility;">@country_err_msg</p>
+                <p><MatTextField Label="@Translator.field_country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
+                <p id="err-container" style="visibility: @_countryErrorVisibility;">@Translator.field_err_country</p>
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatNumericUpDownField Label="@_translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
+                <p><MatNumericUpDownField Label="@Translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
                 <p><ValidationMessage For="@(() => applicant.age)" /></p>
-                <p><MatTextField Label="@_translator.field_email" @bind-Value="@applicant.emailAddress"></MatTextField></p>
+                <p><MatTextField Label="@Translator.field_email" @bind-Value="@applicant.emailAddress"></MatTextField></p>
                 <p><ValidationMessage For="@(() => applicant.emailAddress)" /></p>
                 <br />
-                <p><MatSlideToggle Label="@_translator.field_status_hired" @bind-Value="@applicant.hired"></MatSlideToggle></p>
+                <p><MatSlideToggle Label="@Translator.field_status_hired" @bind-Value="@applicant.hired"></MatSlideToggle></p>
             </div>
         </div>
         <MatDivider></MatDivider>
-        <MatButton Label="@_translator.button_l_submit" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
-        <MatButton Label="@_translator.button_l_reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
+        <MatButton Label="@Translator.button_l_submit" OnClick="InsertApplicant" Disabled="@_isSubmitButtonDisabled" Type="submit"></MatButton>
+        <MatButton Label="@Translator.button_l_reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
     </div>
 </EditForm>
 @code {
 
     ApplicantInsertModel applicant = new ApplicantInsertModel();
 
-    private bool IsResetDisabled => string.IsNullOrEmpty(applicant.address) &&
-                                    string.IsNullOrEmpty(applicant.countryOfOrigin) &&
-                                    string.IsNullOrEmpty(applicant.emailAddress) &&
-                                    string.IsNullOrEmpty(applicant.familyName) &&
-                                    string.IsNullOrEmpty(applicant.name) &&
-                                    applicant.age == 0;
+    private bool IsResetDisabled => applicant.IsDefault();
 
     // Workaround for localized country err msg
     // resolving and di at start conflicts with code sharing
-    private string countryErr_visibility;
-    private string country_err_msg;
-
-    private bool IsSubmitDisabled = true;
-
+    private string _countryErrorVisibility;
+    private bool _isSubmitButtonDisabled = true;
     private System.Timers.Timer _guiUpdateTimer;
-    private I18nText.local _translator = new I18nText.local();
+
+    [CascadingParameter]
+    public I18nText.local Translator { get; set; }
 
     private void ResetData()
     {
         applicant = new ApplicantInsertModel();
-        IsSubmitDisabled = true;
+        _isSubmitButtonDisabled = true;
         HideCountryErrBox();
     }
 
@@ -77,13 +72,12 @@
     // Workaround is needed - force refresh so gui can be updated in case of validation over api
     protected override async Task OnInitializedAsync()
     {
-        _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
+        //Translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
         _guiUpdateTimer = new System.Timers.Timer(500);
         _guiUpdateTimer.Elapsed += OnTimedEvent;
         _guiUpdateTimer.AutoReset = true;
         _guiUpdateTimer.Enabled = true;
         _guiUpdateTimer.Start();
-        country_err_msg = _translator.field_err_country;
         HideCountryErrBox();
     }
 
@@ -100,7 +94,7 @@
     {
         var result = await Val.ValidateAsync(applicant);
         EnableIfNeededCountryErrMsg(result);
-        IsSubmitDisabled = !result.IsValid;
+        _isSubmitButtonDisabled = !result.IsValid;
         StateHasChanged();
     }
 
@@ -112,28 +106,28 @@
             HideCountryErrBox();
     }
 
-    private void HideCountryErrBox() => countryErr_visibility = "hidden";
-    private void ShowCountryErrBox() => countryErr_visibility = "visible";
+    private void HideCountryErrBox() => _countryErrorVisibility = "hidden";
+    private void ShowCountryErrBox() => _countryErrorVisibility = "visible";
 
     private async Task<PostInfo> InsertApplicant()
     {
         _guiUpdateTimer.Stop();
-        if (!IsSubmitDisabled)
+        if (!_isSubmitButtonDisabled)
         {
-            IsSubmitDisabled = true;
+            _isSubmitButtonDisabled = true;
             StateHasChanged();
             var postResult = await ApiService.InsertNewApplicant(applicant, CancellationToken.None);
             if (postResult.IsSuccess)
             {
-                ToastGenerator.DisplayInfo(_translator.toast_h_applicant_added, _translator.toast_m_applicant_added + applicant.fullName);
+                ToastGenerator.DisplayInfo(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + applicant.fullName);
             }
             else if (postResult.IsConnectionError)
             {
-                ToastGenerator.DisplayConnectionError(_translator.toast_h_connection_err, _translator.toast_m_connection_err, async () => await InsertApplicant());
+                ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await InsertApplicant());
             }
             else
             {
-                ToastGenerator.DisplayPostInfoErrors(_translator.toast_h_bad_param_sent, _translator.toast_m_bad_param_sent, postResult);
+                ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
             }
             _guiUpdateTimer.Start();
             StateHasChanged();
