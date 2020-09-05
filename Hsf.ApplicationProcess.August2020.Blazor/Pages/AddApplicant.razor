@@ -70,7 +70,7 @@
 
     // Asynchronous fluent validation is not supported in blazor WASM at this moment
     // Workaround is needed - force refresh so gui can be updated in case of validation over api
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         //Translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
         _guiUpdateTimer = new System.Timers.Timer(500);
