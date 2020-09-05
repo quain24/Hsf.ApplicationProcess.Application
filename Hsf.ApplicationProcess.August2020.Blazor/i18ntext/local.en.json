@@ -10,6 +10,8 @@
   "button_l_submit": "Submit",
   "button_l_reset": "Reset",
 
+  "field_err_country": "Such country does not exist.",
+
   "toast_h_applicant_added": "Success!",
   "toast_m_applicant_added": "Applicant has been added: ",
   "toast_h_connection_err": "Connection error!",

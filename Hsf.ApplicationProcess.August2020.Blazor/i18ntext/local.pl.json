@@ -10,6 +10,8 @@
   "button_l_submit": "Wyślij",
   "button_l_reset": "Wyczyść",
 
+  "field_err_country": "Podany kraj nie istnieje",
+
   "toast_h_applicant_added": "Sukces!",
   "toast_m_applicant_added": "Aplikant zosatał dodany: ",
   "toast_h_connection_err": "Błąd połączenia",

@@ -1,15 +1,17 @@
 ﻿@inherits LayoutComponentBase
+    <link rel="stylesheet" href="css/header.css" />
 
 <div class="sidebar">
     <NavMenu />
 </div>
 
 <div class="main">
-    <div class="top-row px-4">
-        <a href="http://blazor.net" target="_blank" class="ml-md-auto">About</a>
+    <div style="margin-top: 20px">
+        <h1>HSF Applicant demo app</h1>
     </div>
-
-    <div class="content px-4">
-        @Body
+    <div class="mat-elevation-z3 main-container">
+        <div class="content px-4">
+            @Body
+        </div>
     </div>
 </div>

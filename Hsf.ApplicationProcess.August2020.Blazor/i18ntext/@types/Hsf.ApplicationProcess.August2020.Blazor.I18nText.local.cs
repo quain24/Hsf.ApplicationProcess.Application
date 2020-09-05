@@ -25,6 +25,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
         /// <summary>"Email address"</summary>
         public string field_email;
 
+        /// <summary>"Such country does not exist."</summary>
+        public string field_err_country;
+
         /// <summary>"Name"</summary>
         public string field_name;
 

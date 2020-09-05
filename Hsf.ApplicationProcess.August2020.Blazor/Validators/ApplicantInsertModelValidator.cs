@@ -10,6 +10,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
 
         public ApplicantInsertModelValidator(CountryValidator countryValidator)
         {
+
             _countryValidator = countryValidator;
             RuleFor(a => a.name).NotNull().NotEmpty().MinimumLength(5);
             RuleFor(a => a.familyName).NotNull().NotEmpty().MinimumLength(5);
@@ -19,11 +20,10 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
             RuleFor(a => a.countryOfOrigin)
                 .NotNull()
                 .SetValidator(_countryValidator)
-                .WithMessage(applicant => "validation.err_no_such_country");
+                .WithErrorCode("country");
             RuleFor(a => a.emailAddress).NotNull()
                 .EmailAddress()
-                .SetValidator(new EmailValidator())
-                .WithMessage("validation.err_bad_email_format");
+                .SetValidator(new EmailValidator());
         }
     }
 }

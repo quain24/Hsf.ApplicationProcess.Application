@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using MatBlazor;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
+using Toolbelt.Blazor.I18nText;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {

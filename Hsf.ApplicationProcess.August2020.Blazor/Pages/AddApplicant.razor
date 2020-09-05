@@ -1,15 +1,12 @@
 ﻿@*@page "/addapplicant"*@
 @page "/"
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
-@using System.Runtime.CompilerServices
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
-@using Hsf.ApplicationProcess.August2020.Domain.Validators
 @using System.Threading
 @using System.Timers
 @using FluentValidation
 @using FluentValidation.Results
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
-@using Timer = System.Threading.Timer
 
 @inject ApplicantInsertModelValidator Val
 @inject ApplicantApiService ApiService
@@ -17,41 +14,39 @@
 @inject Toolbelt.Blazor.I18nText.I18nText I18nText
 
 <link rel="stylesheet" href="css/addApplicant.css" />
+<h3>@_translator.header_new_applicant</h3>
+<MatDivider></MatDivider>
 
-<div class="mat-elevation-z3 main-container">
-    <h3>@_translator.header_new_applicant</h3>
+<EditForm Model="applicant">
+    <FluentValidator Validator="Val"></FluentValidator>
 
-    <EditForm Model="applicant">
-        <FluentValidator Validator="Val"></FluentValidator>
-
-        <div class="mat-layout-grid mat-layout-grid-align-left">
-            <div class="mat-layout-grid-inner">
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                    <p><MatTextField Label="Name" @bind-Value="@applicant.name"></MatTextField></p>
-                    <p><ValidationMessage For="@(() => applicant.name)" /></p>
-                    <p><MatTextField Label="Family name" @bind-Value="@applicant.familyName"></MatTextField></p>
-                    <p><ValidationMessage For="@(() => applicant.familyName)" /></p>
-                    <p><MatTextField Label="Address" @bind-Value="@applicant.address"></MatTextField></p>
-                    <p><ValidationMessage For="@(() => applicant.address)" /></p>
-                    <p><MatTextField Label="Country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
-                    <p><ValidationMessage For="@(() => applicant.countryOfOrigin)" /></p>
-                </div>
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                    <p><MatNumericUpDownField Label="Age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
-                    <p><ValidationMessage For="@(() => applicant.age)" /></p>
-                    <p><MatTextField Label="Email address" @bind-Value="@applicant.emailAddress"></MatTextField></p>
-                    <p><ValidationMessage For="@(() => applicant.emailAddress)" /></p>
-                    <br />
-                    <p><MatSlideToggle Label="Status" @bind-Value="@applicant.hired"></MatSlideToggle></p>
-                </div>
+    <div class="mat-layout-grid mat-layout-grid-align-left">
+        <div class="mat-layout-grid-inner">
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
+                <p><MatTextField Label="@_translator.field_name" @bind-Value="@applicant.name"></MatTextField></p>
+                <p><ValidationMessage For="@(() => applicant.name)" /></p>
+                <p><MatTextField Label="@_translator.field_surname" @bind-Value="@applicant.familyName"></MatTextField></p>
+                <p><ValidationMessage For="@(() => applicant.familyName)" /></p>
+                <p><MatTextField Label="@_translator.field_address" @bind-Value="@applicant.address"></MatTextField></p>
+                <p><ValidationMessage For="@(() => applicant.address)" /></p>
+                <p><MatTextField Label="@_translator.field_country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
+                <p style="visibility: @countryErr_visibility">@country_err_msg</p>
             </div>
-            <MatDivider></MatDivider>
-            <MatButton Label="Submit" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
-            <MatButton Label="Reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
+            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
+                <p><MatNumericUpDownField Label="@_translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
+                <p><ValidationMessage For="@(() => applicant.age)" /></p>
+                <p><MatTextField Label="@_translator.field_email" @bind-Value="@applicant.emailAddress"></MatTextField></p>
+                <p><ValidationMessage For="@(() => applicant.emailAddress)" /></p>
+                <br />
+                <p><MatSlideToggle Label="@_translator.field_status_hired" @bind-Value="@applicant.hired"></MatSlideToggle></p>
+            </div>
         </div>
-    </EditForm>
-</div>
+        <MatDivider></MatDivider>
+        <MatButton Label="@_translator.button_l_submit" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
+        <MatButton Label="@_translator.button_l_reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
+    </div>
+</EditForm>
 @code {
 
     ApplicantInsertModel applicant = new ApplicantInsertModel() { address = "adressadress", age = 25, emailAddress = "heniuw@wp.pl", familyName = "Wiśniewski", name = "Endrju" };
@@ -62,6 +57,11 @@
                                     string.IsNullOrEmpty(applicant.familyName) &&
                                     string.IsNullOrEmpty(applicant.name) &&
                                     applicant.age == 0;
+
+    // Workaround for localized country err msg
+    // resolving and di at start conflicts with code sharing
+    private string countryErr_visibility = "hidden";
+    private string country_err_msg;
 
     private bool IsSubmitDisabled = true;
 
@@ -91,6 +91,7 @@
         _guiUpdateTimer.AutoReset = true;
         _guiUpdateTimer.Enabled = true;
         _guiUpdateTimer.Start();
+        country_err_msg = _translator.field_err_country;
     }
 
     private void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -105,8 +106,17 @@
     private async Task Update()
     {
         var result = await Val.ValidateAsync(applicant);
+        EnableIfNeededCountryErrMsg(result);
         IsSubmitDisabled = !result.IsValid;
         StateHasChanged();
+    }
+
+    private void EnableIfNeededCountryErrMsg(ValidationResult result)
+    {
+        if (result.Errors.Any(c => c.ErrorCode == "country"))
+            countryErr_visibility = "visible";
+        else
+            countryErr_visibility = "hidden";
     }
 
     private async Task<PostInfo> InsertApplicant()
@@ -121,7 +131,7 @@
             {
                 ToastGenerator.DisplayInfo(_translator.toast_h_applicant_added, _translator.toast_m_applicant_added + applicant.fullName);
             }
-            else if(postResult.IsConnectionError)
+            else if (postResult.IsConnectionError)
             {
                 ToastGenerator.DisplayConnectionError(_translator.toast_h_connection_err, _translator.toast_m_connection_err, async () => await InsertApplicant());
             }
