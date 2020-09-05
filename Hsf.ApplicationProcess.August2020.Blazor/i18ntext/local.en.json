@@ -1,0 +1,12 @@
+{
+  "header_new_applicant": "Add new applicant to the database",
+  "field_name": "Name",
+  "field_surname": "Family name",
+  "field_address": "Address",
+  "field_country": "Country of origin",
+  "field_age": "Age",
+  "field_email": "Email address",
+  "field_status_hired": "Hired",
+  "button_l_submit": "Submit",
+  "button_l_reset": "Reset"
+}

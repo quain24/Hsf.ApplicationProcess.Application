@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
 using MatBlazor;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {
@@ -17,23 +18,25 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
             builder.RootComponents.Add<App>("app");
 
             builder.Services.AddHttpClient<ApplicantApiService>();
-            builder.Services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
 
-            // -- Left for publishing - Error - blazor wasm cannot resolve HttpFactory - issue made on github
+            // -- Left for publishing - Error - blazor wasm cannot resolve HttpFactory sometimes when published - issue made on github
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") });
             //builder.Services.AddScoped<ApplicantApiService>();
 
+            builder.Services.AddI18nText();
             builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-            builder.Services.AddTransient<EmailValidator>();
+            builder.Services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
+            builder.Services.AddTransient<ToastGenerator>();
 
             builder.Services.AddMatToaster(config =>
             {
-                config.Position = MatToastPosition.BottomRight;
+                config.Position = MatToastPosition.BottomFullWidth;
                 config.PreventDuplicates = false;
                 config.NewestOnTop = true;
                 config.ShowCloseButton = true;
                 config.MaximumOpacity = 100;
                 config.VisibleStateDuration = 3000;
+                config.ShowProgressBar = true;
             });
 
             await builder.Build().RunAsync();

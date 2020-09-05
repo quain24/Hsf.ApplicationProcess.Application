@@ -1,17 +1,14 @@
 ﻿using FluentValidation;
-using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
-using Hsf.ApplicationProcess.August2020.Blazor.ViewModels;
-using Hsf.ApplicationProcess.August2020.Domain.Models;
+using Hsf.ApplicationProcess.August2020.Blazor.Models;
 using Hsf.ApplicationProcess.August2020.Domain.Validators;
-using Microsoft.Extensions.Localization;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
 {
-    public class ApplicantInsertViewModelValidator : AbstractValidator<ApplicantInsertViewModel>
+    public class ApplicantInsertModelValidator : AbstractValidator<ApplicantInsertModel>
     {
         private readonly CountryValidator _countryValidator;
 
-        public ApplicantInsertViewModelValidator(CountryValidator countryValidator)
+        public ApplicantInsertModelValidator(CountryValidator countryValidator)
         {
             _countryValidator = countryValidator;
             RuleFor(a => a.name).NotNull().NotEmpty().MinimumLength(5);

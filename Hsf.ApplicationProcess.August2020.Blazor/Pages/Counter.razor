@@ -6,7 +6,7 @@
 @using System.Net.Http.Headers
 @using System.Text.Json
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
-@using Hsf.ApplicationProcess.August2020.Blazor.ViewModels
+@using Hsf.ApplicationProcess.August2020.Blazor.Models
 @using Hsf.ApplicationProcess.August2020.Domain.Models
 
 <h1>Counter</h1>
@@ -33,11 +33,10 @@
     private Applicant applicant;
 
     private PostInfo errors;
-    
 
     private async Task IncrementCount()
     {
-        var apl = new ApplicantInsertViewModel
+        var apl = new ApplicantInsertModel
         {
             familyName = "Kowalski",
             address = "Sarmacka 16/2",

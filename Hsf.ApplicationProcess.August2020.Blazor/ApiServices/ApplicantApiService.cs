@@ -1,5 +1,4 @@
-﻿using Hsf.ApplicationProcess.August2020.Blazor.ViewModels;
-using Hsf.ApplicationProcess.August2020.Domain.Models;
+﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -7,6 +6,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Hsf.ApplicationProcess.August2020.Blazor.Models;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {
@@ -35,7 +35,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             return output;
         }
 
-        public async Task<PostInfo> InsertNewApplicant(ApplicantInsertViewModel newApplicant, CancellationToken token)
+        public async Task<PostInfo> InsertNewApplicant(ApplicantInsertModel newApplicant, CancellationToken token)
         {
             HttpResponseMessage result;
             try
@@ -67,8 +67,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         private PostInfo NetworkConnectionError(Exception ex)
         {
-            var codes = new ResponseCodes();
-            codes.AddCode("Connection Error", ex.Message, ex.StackTrace);
+            var codes = new ResponseCodes().AddCode("Connection Error", ex.Message, ex.StackTrace);
             return new PostInfo(false, codes);
         }
 

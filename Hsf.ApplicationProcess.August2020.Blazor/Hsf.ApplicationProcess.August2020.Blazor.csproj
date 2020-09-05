@@ -7,6 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="i18ntext\local.en.json" />
+    <Content Remove="i18ntext\local.pl.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Accelist.FluentValidation.Blazor" Version="3.0.0" />
     <PackageReference Include="FluentValidation" Version="9.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="9.2.0" />

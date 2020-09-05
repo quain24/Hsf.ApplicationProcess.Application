@@ -1,6 +1,6 @@
-﻿namespace Hsf.ApplicationProcess.August2020.Blazor.ViewModels
+﻿namespace Hsf.ApplicationProcess.August2020.Blazor.Models
 {
-    public class ApplicantInsertViewModel
+    public class ApplicantInsertModel
     {
         public string name { get; set; }
         public string familyName { get; set; }

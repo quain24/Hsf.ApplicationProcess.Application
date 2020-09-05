@@ -1,0 +1,12 @@
+{
+  "header_new_applicant": "Dodaj nowego aplikanta do bazy",
+  "field_name": "Imię",
+  "field_surname": "Nazwisko",
+  "field_address": "Adres",
+  "field_country": "Kraj pochodzenia",
+  "field_age": "Wiek",
+  "field_email": "Adres email",
+  "field_status_hired": "Zatrudniony",
+  "button_l_submit": "Wyślij",
+  "button_l_reset": "Wyczyść"
+}

@@ -1,4 +1,5 @@
-﻿@page "/addapplicant"
+﻿@*@page "/addapplicant"*@
+@page "/"
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 @using System.Runtime.CompilerServices
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
@@ -7,51 +8,53 @@
 @using System.Timers
 @using FluentValidation
 @using FluentValidation.Results
-@using Hsf.ApplicationProcess.August2020.Blazor.ViewModels
+@using Hsf.ApplicationProcess.August2020.Blazor.Models
+@using Timer = System.Threading.Timer
 
-@inject ApplicantInsertViewModelValidator Val
+@inject ApplicantInsertModelValidator Val
 @inject ApplicantApiService ApiService
-@inject IMatToaster Toaster
+@inject ToastGenerator ToastGenerator
+@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+
 <link rel="stylesheet" href="css/addApplicant.css" />
 
 <div class="mat-elevation-z3 main-container">
-    <h3>Add new applicant to database</h3>
+    <h3>@_translator.header_new_applicant</h3>
 
     <EditForm Model="applicant">
         <FluentValidator Validator="Val"></FluentValidator>
 
-        <div class="mat-layout-grid mat-layout-grid-allign-middle">
+        <div class="mat-layout-grid mat-layout-grid-align-left">
             <div class="mat-layout-grid-inner">
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-                    <MatTextField Label="Name" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" @bind-Value="@applicant.name"></MatTextField>
-                    <ValidationMessage For="@(() => applicant.name)" />
-                    <MatTextField Label="Family name" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" @bind-Value="@applicant.familyName"></MatTextField>
-                    <ValidationMessage For="@(() => applicant.familyName)" />
-                    <MatTextField Label="Address" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" @bind-Value="@applicant.address"></MatTextField>
-                    <ValidationMessage For="@(() => applicant.address)" />
-                    <MatTextField Label="Country" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" @bind-Value="@applicant.countryOfOrigin"></MatTextField>
-                    <ValidationMessage For="@(() => applicant.countryOfOrigin)" />
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
+                    <p><MatTextField Label="Name" @bind-Value="@applicant.name"></MatTextField></p>
+                    <p><ValidationMessage For="@(() => applicant.name)" /></p>
+                    <p><MatTextField Label="Family name" @bind-Value="@applicant.familyName"></MatTextField></p>
+                    <p><ValidationMessage For="@(() => applicant.familyName)" /></p>
+                    <p><MatTextField Label="Address" @bind-Value="@applicant.address"></MatTextField></p>
+                    <p><ValidationMessage For="@(() => applicant.address)" /></p>
+                    <p><MatTextField Label="Country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
+                    <p><ValidationMessage For="@(() => applicant.countryOfOrigin)" /></p>
                 </div>
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1"></div>
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-                    <MatNumericUpDownField Label="Age" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField>
-                    <ValidationMessage For="@(() => applicant.age)" />
-                    <MatTextField Label="Email address" OnKeyPress="@Update" OnInput="@Update" OnFocus="@Update" OnFocusOut="@Update" @bind-Value="@applicant.emailAddress"></MatTextField>
-                    <ValidationMessage For="@(() => applicant.emailAddress)" />
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
+                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
+                    <p><MatNumericUpDownField Label="Age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
+                    <p><ValidationMessage For="@(() => applicant.age)" /></p>
+                    <p><MatTextField Label="Email address" @bind-Value="@applicant.emailAddress"></MatTextField></p>
+                    <p><ValidationMessage For="@(() => applicant.emailAddress)" /></p>
                     <br />
-                    <MatSlideToggle Label="Status" @bind-Value="@applicant.hired"></MatSlideToggle>
-                </div>
-                <div class="mat-layout-grid-cell mat-layout-grid-cell-span-4">
-                    <MatButton Label="Submit" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
-                    <MatButton Label="Reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
+                    <p><MatSlideToggle Label="Status" @bind-Value="@applicant.hired"></MatSlideToggle></p>
                 </div>
             </div>
+            <MatDivider></MatDivider>
+            <MatButton Label="Submit" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
+            <MatButton Label="Reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
         </div>
     </EditForm>
 </div>
 @code {
 
-    ApplicantInsertViewModel applicant = new ApplicantInsertViewModel() { address = "adressadress", age = 25, emailAddress = "heniuw@wp.pl", familyName = "Wiśniewski", name = "Endrju" };
+    ApplicantInsertModel applicant = new ApplicantInsertModel() { address = "adressadress", age = 25, emailAddress = "heniuw@wp.pl", familyName = "Wiśniewski", name = "Endrju" };
 
     private bool IsResetDisabled => string.IsNullOrEmpty(applicant.address) &&
                                     string.IsNullOrEmpty(applicant.countryOfOrigin) &&
@@ -62,26 +65,12 @@
 
     private bool IsSubmitDisabled = true;
 
-    public void Show(MatToastType type, string icon = "")
-    {
-        Toaster.Add("_message", type, "_title", icon, config =>
-        {
-            config.RequireInteraction = false;
-
-            if (true)
-            {
-                config.Onclick = toast =>
-                {
-                    Console.WriteLine($"Title: \"{toast.Title}\"; message: \"{toast.Message}\"; Type: {toast.Options.Type}");
-                    return Task.CompletedTask;
-                };
-            }
-        });
-    }
+    private System.Timers.Timer _guiUpdateTimer;
+    I18nText.local _translator = new I18nText.local();
 
     private void ResetData()
     {
-        applicant = new ApplicantInsertViewModel();
+        applicant = new ApplicantInsertModel();
         IsSubmitDisabled = true;
     }
 
@@ -92,15 +81,16 @@
     }
 
     // Asynchronous fluent validation is not supported in blazor WASM at this moment
-    // Workaround is needed - force form re-validation
+    // Workaround is needed - force refresh so gui can be updated in case of validation over api
     private System.Timers.Timer timer;
     protected override async Task OnInitializedAsync()
     {
-        timer = new System.Timers.Timer(250);
-        timer.Elapsed += this.OnTimedEvent;
-        timer.AutoReset = true;
-        timer.Enabled = true;
-        timer.Start();
+        _translator = await I18nText.GetTextTableAsync<I18nText.local>(this);
+        _guiUpdateTimer = new System.Timers.Timer(500);
+        _guiUpdateTimer.Elapsed += OnTimedEvent;
+        _guiUpdateTimer.AutoReset = true;
+        _guiUpdateTimer.Enabled = true;
+        _guiUpdateTimer.Start();
     }
 
     private void OnTimedEvent(Object source, ElapsedEventArgs e)
@@ -121,24 +111,26 @@
 
     private async Task<PostInfo> InsertApplicant()
     {
-        IsSubmitDisabled = true;
-        StateHasChanged();
-        await Update();
+        _guiUpdateTimer.Stop();
         if (!IsSubmitDisabled)
         {
+            IsSubmitDisabled = true;
+            StateHasChanged();
             var postResult = await ApiService.InsertNewApplicant(applicant, CancellationToken.None);
             if (postResult.IsSuccess)
             {
                 StateHasChanged();
-                return postResult;
+                ToastGenerator.DisplayInfo("Applicant added!", applicant.name + " " + applicant.familyName + " " + "has been added to database.");
             }
+            else
+            {
+                StateHasChanged();
+                ToastGenerator.DisplayConnectionError(async () => await InsertApplicant());
+            }
+            _guiUpdateTimer.Start();
+            return postResult;
         }
-
-        var result = await Val.ValidateAsync(applicant);
-        var resp = new ResponseCodes()
-            .AddCode("Invalid form data", result.Errors.Select(c => c.ErrorMessage).ToArray());
-        StateHasChanged();
-        return new PostInfo(false, resp);
+        _guiUpdateTimer.Start();
+        return null;
     }
-
 }
