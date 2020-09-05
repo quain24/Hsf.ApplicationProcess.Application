@@ -8,5 +8,12 @@
   "field_email": "Adres email",
   "field_status_hired": "Zatrudniony",
   "button_l_submit": "Wyślij",
-  "button_l_reset": "Wyczyść"
+  "button_l_reset": "Wyczyść",
+
+  "toast_h_applicant_added": "Sukces!",
+  "toast_m_applicant_added": "Aplikant zosatał dodany: ",
+  "toast_h_connection_err": "Błąd połączenia",
+  "toast_m_connection_err": "Nie udało się dodać aplikanta do bazy - brak połączenia z API. Kliknij by ponowić próbę.",
+  "toast_h_bad_param_sent": "API odrzuciło dane!",
+  "toast_m_bad_param_sent": "Wysłano błędne parametry: "
 }

@@ -1,32 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using MatBlazor;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
-using MatBlazor;
-
+using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {
     public class ToastGenerator
     {
         private readonly IMatToaster _toaster;
-        private readonly string _errorMessage = "msg";
-        private readonly string _errorHeader = "err";
 
         public ToastGenerator(IMatToaster toaster)
         {
             _toaster = toaster;
         }
 
-        public void DisplayInfo(string title, string message)
+        public void DisplayInfo(string title, string message = "")
         {
             _toaster.Add(message, MatToastType.Info, title, null, config => config.RequireInteraction = false);
         }
 
-        public void DisplayConnectionError(Action retryAction = null, string alternativeMessage = "")
+        public void DisplayConnectionError(string title, string message = "", Action retryAction = null)
         {
-            _toaster.Add(string.IsNullOrWhiteSpace(alternativeMessage) ? _errorMessage : alternativeMessage,
-                MatToastType.Danger, _errorHeader, null, options =>
+            _toaster.Add(message, MatToastType.Danger, title, null, options =>
                 {
                     if (retryAction != null)
                     {
@@ -37,6 +33,23 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                         };
                     }
                 });
+        }
+
+        public void DisplayPostInfoErrors(string title, string messageHeader, PostInfo info)
+        {
+            var type = MatToastType.Danger;
+            var message = string.Empty;
+
+            var infos = info.ResponseCodes.GetCodes();
+
+            foreach (var infoList in infos)
+            {
+                var tmp = infoList.Aggregate((s, next) => s + ", " + next);
+                message += tmp + " ";
+            }
+
+            _toaster.Add(messageHeader + " " + message, type, messageHeader);
+
         }
     }
 }

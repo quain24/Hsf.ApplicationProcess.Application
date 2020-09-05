@@ -9,5 +9,7 @@
         public string emailAddress { get; set; }
         public int age { get; set; }
         public bool hired { get; set; }
+
+        public string fullName => string.Concat(name, " ", familyName);
     }
 }

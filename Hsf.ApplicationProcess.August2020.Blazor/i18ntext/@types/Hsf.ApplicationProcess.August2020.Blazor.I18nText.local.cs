@@ -36,5 +36,23 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
 
         /// <summary>"Add new applicant to the database"</summary>
         public string header_new_applicant;
+
+        /// <summary>"Success!"</summary>
+        public string toast_h_applicant_added;
+
+        /// <summary>"API rejected sent data!"</summary>
+        public string toast_h_bad_param_sent;
+
+        /// <summary>"Connection error!"</summary>
+        public string toast_h_connection_err;
+
+        /// <summary>"Applicant has been added: "</summary>
+        public string toast_m_applicant_added;
+
+        /// <summary>"Incorrect parameters were sent: "</summary>
+        public string toast_m_bad_param_sent;
+
+        /// <summary>"Could not add applicant to database - API is not reachable. Click to try again."</summary>
+        public string toast_m_connection_err;
     }
 }

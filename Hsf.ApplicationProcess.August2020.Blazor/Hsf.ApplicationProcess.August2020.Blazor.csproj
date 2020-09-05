@@ -8,7 +8,11 @@
 
   <ItemGroup>
     <Content Remove="i18ntext\local.en.json" />
-    <Content Remove="i18ntext\local.pl.json" />
+    <Content Remove="i18ntext\local.pl-PL.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="i18ntext\local.pl.json" />
   </ItemGroup>
 
   <ItemGroup>

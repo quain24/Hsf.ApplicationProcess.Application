@@ -59,16 +59,16 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
         {
             var response = new ResponseCodes();
             response.AddCode("Insert", "success");
-            return new PostInfo(true, response);
+            return new PostInfo(PostStatus.Success, response);
         }
 
 
-        private PostInfo Failure(ResponseCodes responseCodes) => new PostInfo(false, responseCodes);
+        private PostInfo Failure(ResponseCodes responseCodes) => new PostInfo(PostStatus.ParameterError, responseCodes);
 
         private PostInfo NetworkConnectionError(Exception ex)
         {
-            var codes = new ResponseCodes().AddCode("Connection Error", ex.Message, ex.StackTrace);
-            return new PostInfo(false, codes);
+            var codes = new ResponseCodes().AddCode(ex.Message, ex.StackTrace);
+            return new PostInfo(PostStatus.ConnectionError, codes);
         }
 
         private async Task<ResponseCodes> ExtractErrorCodes(HttpResponseMessage fromMessage, CancellationToken token)
