@@ -37,10 +37,13 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
         /// <summary>"Such country does not exist."</summary>
         public string field_err_country;
 
+        /// <summary>"Email format is invalid."</summary>
+        public string field_err_email;
+
         /// <summary>"Name"</summary>
         public string field_name;
 
-        /// <summary>"Hired"</summary>
+        /// <summary>"Applicant is Hired"</summary>
         public string field_status_hired;
 
         /// <summary>"Family name"</summary>

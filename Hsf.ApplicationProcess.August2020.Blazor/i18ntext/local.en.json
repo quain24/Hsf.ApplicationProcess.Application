@@ -13,13 +13,14 @@
   "field_country": "Country of origin",
   "field_age": "Age",
   "field_email": "Email address",
-  "field_status_hired": "Hired",
+  "field_status_hired": "Applicant is Hired",
   "button_l_submit": "Submit",
   "button_l_reset": "Reset",
   "button_l_next": "Next",
   "button_l_previous": "Previous",
 
   "field_err_country": "Such country does not exist.",
+  "field_err_email": "Email format is invalid.", 
 
   "toast_h_applicant_added": "Success!",
   "toast_m_applicant_added": "Applicant has been added: ",

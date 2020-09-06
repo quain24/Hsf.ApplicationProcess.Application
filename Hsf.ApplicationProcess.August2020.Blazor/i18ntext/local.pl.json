@@ -13,13 +13,14 @@
   "field_country": "Kraj pochodzenia",
   "field_age": "Wiek",
   "field_email": "Adres email",
-  "field_status_hired": "Zatrudniony",
+  "field_status_hired": "Aplikant zatrudniony",
   "button_l_submit": "Wyślij",
   "button_l_reset": "Wyczyść",
   "button_l_next": "Dalej",
-  "button_l_previous": "Wstecz", 
+  "button_l_previous": "Wstecz",
 
-  "field_err_country": "Podany kraj nie istnieje",
+  "field_err_country": "Podany kraj nie istnieje.",
+  "field_err_email": "Błędny format adresu email.",
 
   "toast_h_applicant_added": "Sukces!",
   "toast_m_applicant_added": "Aplikant zosatał dodany: ",

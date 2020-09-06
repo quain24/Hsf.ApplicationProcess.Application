@@ -1,6 +1,10 @@
 ﻿@using Hsf.ApplicationProcess.August2020.Blazor.I18nText
+@using Hsf.ApplicationProcess.August2020.Blazor.Validators
+@using FluentValidation
+@using Hsf.ApplicationProcess.August2020.Domain.Validators
 @inherits LayoutComponentBase
 @inject Toolbelt.Blazor.I18nText.I18nText I18nText
+@inject ApplicantInsertModelValidator Val
 
 <link rel="stylesheet" href="css/header.css" />
 
@@ -23,10 +27,19 @@
 
 @code
 {
-    [CascadingParameter] public I18nText.local Translator { get; set; } = new local();
+    [CascadingParameter] public local Translator { get; set; } = new local();
 
     protected override async Task OnInitializedAsync()
     {
         Translator = await I18nText.GetTextTableAsync<local>(this);
+        InjectEmailValidationLocalized();
+    }
+
+    // Cannot inject localization on startup - workaround
+    private void InjectEmailValidationLocalized()
+    {
+        Val.RuleFor(cp => cp.emailAddress)
+            .SetValidator(new EmailValidator())
+            .WithMessage(Translator.field_err_email);
     }
 }

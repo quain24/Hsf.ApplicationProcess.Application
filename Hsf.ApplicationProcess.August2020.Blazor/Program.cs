@@ -1,13 +1,13 @@
 using FluentValidation;
 using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
+using Hsf.ApplicationProcess.August2020.Blazor.Validators;
 using Hsf.ApplicationProcess.August2020.Domain.Validators;
+using MatBlazor;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
-using MatBlazor;
 using Toolbelt.Blazor.Extensions.DependencyInjection;
-using Toolbelt.Blazor.I18nText;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {
@@ -25,7 +25,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
             //builder.Services.AddScoped<ApplicantApiService>();
 
             builder.Services.AddI18nText();
-            builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+            builder.Services.AddSingleton(cp =>
+                new ApplicantInsertModelValidator(cp.GetService<CountryValidator>()));
+
+            builder.Services.AddSingleton(cp => new ApplicantInsertModelValidator(cp.GetService<CountryValidator>()));
+
+            //builder.Services.AddValidatorsFromAssemblyContaining<Program>();
             builder.Services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
             builder.Services.AddTransient<ToastGenerator>();
 

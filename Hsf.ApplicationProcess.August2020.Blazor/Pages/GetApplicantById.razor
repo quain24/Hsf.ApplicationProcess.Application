@@ -1,44 +1,20 @@
 ﻿@page "/getbyid"
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
-@inject Toolbelt.Blazor.I18nText.I18nText I18nText
+@using Hsf.ApplicationProcess.August2020.Blazor.Validators
+@inject ApplicantInsertModelValidator Val
 <link rel="stylesheet" href="css/addApplicant.css" />
 <h3>@Translator.header_view_applicants</h3>
 <MatDivider></MatDivider>
 
-<EditForm Model="applicant">
-    @*<FluentValidator Validator="Val"></FluentValidator>*@
+<ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val"></ApplicantInsertModelValidationForm>
 
-    <div class="mat-layout-grid mat-layout-grid-align-left">
-        <div class="mat-layout-grid-inner">
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatTextField Label="@Translator.field_name" @bind-Value="@applicant.name"></MatTextField></p>
-                <p><ValidationMessage For="@(() => applicant.name)" /></p>
-                <p><MatTextField Label="@Translator.field_surname" @bind-Value="@applicant.familyName"></MatTextField></p>
-                <p><ValidationMessage For="@(() => applicant.familyName)" /></p>
-                <p><MatTextField Label="@Translator.field_address" @bind-Value="@applicant.address"></MatTextField></p>
-                <p><ValidationMessage For="@(() => applicant.address)" /></p>
-                <p><MatTextField Label="@Translator.field_country" @bind-Value="@applicant.countryOfOrigin"></MatTextField></p>
-                @*<p id="err-container" style="visibility: @countryErr_visibility;">@country_err_msg</p>*@
-            </div>
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
-            <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatNumericUpDownField Label="@Translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@applicant.age"></MatNumericUpDownField></p>
-                <p><ValidationMessage For="@(() => applicant.age)" /></p>
-                <p><MatTextField Label="@Translator.field_email" @bind-Value="@applicant.emailAddress"></MatTextField></p>
-                <p><ValidationMessage For="@(() => applicant.emailAddress)" /></p>
-                <br />
-                <p><MatSlideToggle Label="@Translator.field_status_hired" @bind-Value="@applicant.hired"></MatSlideToggle></p>
-            </div>
-        </div>
-        <MatDivider></MatDivider>
-        @*<MatButton Label="@_translator.button_l_previous" OnClick="InsertApplicant" Disabled="@IsSubmitDisabled" Type="submit"></MatButton>
-        <MatButton Label="@_translator.button_l_reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>*@
-    </div>
-</EditForm>
+
 
 @code {
-    ApplicantInsertModel applicant = new ApplicantInsertModel();
-
     [CascadingParameter]
     I18nText.local Translator { get; set; }
+
+    [Parameter]
+    public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel();
+
 }

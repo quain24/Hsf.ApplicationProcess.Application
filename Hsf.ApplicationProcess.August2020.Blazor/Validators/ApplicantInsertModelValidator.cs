@@ -20,10 +20,8 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
             RuleFor(a => a.countryOfOrigin)
                 .NotNull()
                 .SetValidator(_countryValidator)
-                .WithErrorCode("country");
-            RuleFor(a => a.emailAddress).NotNull()
-                .EmailAddress()
-                .SetValidator(new EmailValidator());
+                .WithErrorCode(Global.ValidatorConstants.CountryErrorCode);
+            RuleFor(a => a.emailAddress).EmailAddress().WithMessage(" ").NotNull();
         }
     }
 }
