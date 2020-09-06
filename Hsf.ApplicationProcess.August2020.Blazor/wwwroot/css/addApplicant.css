@@ -6,6 +6,8 @@
 #err-container {
     font-size: 12pt;
     color: red;
+    display: block;
+    height: 30px;
 }
 
 .main-container{

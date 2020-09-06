@@ -3,7 +3,9 @@
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
 @using Hsf.ApplicationProcess.August2020.Domain.Models
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
+@using Hsf.ApplicationProcess.August2020.Blazor.Extensions
 @using System.Threading
+
 @inject ApplicantInsertModelValidator Val
 @inject ToastGenerator ToastGenerator
 @inject ApplicantApiService ApiServices
@@ -11,14 +13,13 @@
 <link rel="stylesheet" href="css/addApplicant.css" />
 <h3>@Translator.header_view_applicants</h3>
 <MatDivider></MatDivider>
-<MatNumericUpDownField @bind-Value="@id" Dense="true"></MatNumericUpDownField>
-
-
 <ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val" FormValidityChanged="OnFormValidityChanged"></ApplicantInsertModelValidationForm>
-<MatButton Label="Previous" Type="submit" OnClick="GetApplicantWithId"></MatButton>
-<MatButton Label="Update" Disabled="@_isUpdateDisabled"></MatButton>
-<MatButton Label="Next"></MatButton>
-
+<div>
+    <MatButton Label="Previous" Type="submit" OnClick="GetApplicantWithId"></MatButton>
+    <MatButton Label="Update" Disabled="@_isUpdateDisabled"></MatButton>
+    <MatButton Label="Next"></MatButton>
+    <MatNumericUpDownField style="max-height: 25px; padding-bottom: -15px;" @bind-Value="@Id" Dense="true"></MatNumericUpDownField>
+</div>
 
 @code {
     [CascadingParameter]
@@ -31,11 +32,11 @@
     private bool _isNext;
     private bool _isUpdateDisabled = true;
 
-    public Applicant ApplicantWithId { get; set; } = new Applicant();
+    private Applicant ApplicantWithId { get; set; } = new Applicant();
 
-    public int id { get; set; } = 3;
+    public int Id { get; set; } = 3;
 
-    public void OnFormValidityChanged(bool isValid)
+    private void OnFormValidityChanged(bool isValid)
     {
         _isUpdateDisabled = !isValid;
     }
@@ -43,11 +44,12 @@
     private async Task GetApplicantWithId()
     {
         StateHasChanged();
-        var result = await ApiServices.GetApplicantById(id, CancellationToken.None);
+        var result = await ApiServices.GetApplicantById(Id, CancellationToken.None);
         if (result.IsSuccess)
         {
-            ApplicantWithId = result?.GetRetrievedData;
-            Console.WriteLine(ApplicantWithId?.Address);
+            Applicant = result.GetRetrievedData.ToApplicantInsertModel();
+            Id = result.GetRetrievedData.ID;
+            StateHasChanged();
         }
         else
         {

@@ -1,4 +1,5 @@
 ﻿using Hsf.ApplicationProcess.August2020.Blazor.Models;
+using Hsf.ApplicationProcess.August2020.Domain.Models;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.Extensions
 {
@@ -12,6 +13,21 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Extensions
                 string.IsNullOrEmpty(model.familyName) &&
                 string.IsNullOrEmpty(model.name) &&
                 model.age == 0;
+        }
+
+        public static Applicant ToApplicantModel(this ApplicantInsertModel applicantInsertModel, int id)
+        {
+            return new Applicant
+            {
+                Address = applicantInsertModel.address,
+                FamilyName = applicantInsertModel.familyName,
+                EmailAddress = applicantInsertModel.emailAddress,
+                Age = applicantInsertModel.age,
+                CountryOfOrigin = applicantInsertModel.countryOfOrigin,
+                Hired = applicantInsertModel.hired,
+                Name = applicantInsertModel.name,
+                ID = id
+            };
         }
     }
 }

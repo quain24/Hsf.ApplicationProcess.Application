@@ -22,7 +22,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
 
             builder.Services.AddHttpClient<ApplicantApiService>();
 
-            // -- Left for publishing - Error - blazor wasm cannot resolve HttpFactory sometimes when published - issue made on github
+            // -- Left for publishing - Error - blazor wasm cannot resolve HttpFactory >>sometimes<< when published - issue made on github
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:5011/api/applicants") });
             //builder.Services.AddScoped<ApplicantApiService>();
 

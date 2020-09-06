@@ -21,7 +21,6 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         public async Task<ApiInfoWithApplicantData> GetApplicantById(int id, CancellationToken token)
         {
-            Applicant output;
             HttpResponseMessage result = null;
             try
             {
@@ -31,8 +30,8 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
                 try
                 {
                     var json = await result.Content.ReadAsStringAsync();
-                    output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
-                    { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    var output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
+                        { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                     return SuccessGet(output);
                 }
                 catch (JsonException)
@@ -42,7 +41,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
                 }
             }
 
-            // 
+            // There is no public more specific exception to catch in case of cors / connection failure not by http client
             catch (Exception ex)
             {
                 return NetworkConnectionError(ex);
@@ -55,22 +54,25 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         public async Task<ApiInfo> InsertNewApplicant(ApplicantInsertModel newApplicant, CancellationToken token)
         {
-            HttpResponseMessage result;
+            HttpResponseMessage result = null;
             try
             {
                 result = await _client.PostAsJsonAsync(_client.BaseAddress, newApplicant, token);
+                if (result.IsSuccessStatusCode)
+                    return Success();
+
+                var responseCodes = await ExtractErrorCodes(result, token);
+
+                return Failure(responseCodes);
             }
             catch (Exception ex)
             {
                 return NetworkConnectionError(ex);
             }
-
-            if (result.IsSuccessStatusCode)
-                return Success();
-
-            var responseCodes = await ExtractErrorCodes(result, token);
-
-            return Failure(responseCodes);
+            finally
+            {
+                result?.Dispose();
+            }
         }
 
         private ApiInfoWithApplicantData SuccessGet(Applicant retrievedApplicant)
