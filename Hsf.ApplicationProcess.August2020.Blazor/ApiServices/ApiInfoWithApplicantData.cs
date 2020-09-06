@@ -6,10 +6,14 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
     {
         private readonly Applicant _returnedApplicant;
 
-        public ApiInfoWithApplicantData(Status status, ResponseCodes responseCodes, Applicant returnedApplicant) : base(status, responseCodes)
+        public ApiInfoWithApplicantData(Status status, ResponseCodes responseCodes, Applicant returnedApplicant = null) : base(status, responseCodes)
         {
             _returnedApplicant = returnedApplicant;
+            if (status == Status.NotFound)
+                IsNotFound = true;
         }
+
+        public bool IsNotFound { get; private set; }
 
         public Applicant GetRetrievedData => _returnedApplicant ?? new Applicant();
     }

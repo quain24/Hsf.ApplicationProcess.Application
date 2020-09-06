@@ -2,6 +2,7 @@
 using Hsf.ApplicationProcess.August2020.Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -25,10 +26,11 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             try
             {
                 result = await _client.GetAsync(_client.BaseAddress + $"/{id}", token);
-                result.EnsureSuccessStatusCode();
 
                 try
                 {
+                    if (result.StatusCode == HttpStatusCode.NotFound)
+                        return NotFound(id);
                     var json = await result.Content.ReadAsStringAsync();
                     var output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
                         { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
@@ -50,6 +52,12 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             {
                 result?.Dispose();
             }
+        }
+
+        private ApiInfoWithApplicantData NotFound(int id)
+        {
+            var response = new ResponseCodes().AddCode("NotFound", id.ToString());
+            return new ApiInfoWithApplicantData(Status.NotFound, response);
         }
 
         public async Task<ApiInfo> InsertNewApplicant(ApplicantInsertModel newApplicant, CancellationToken token)
@@ -77,8 +85,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 
         private ApiInfoWithApplicantData SuccessGet(Applicant retrievedApplicant)
         {
-            var response = new ResponseCodes();
-            response.AddCode("Get", "success");
+            var response = new ResponseCodes().AddCode("Get", "success");
             return new ApiInfoWithApplicantData(Status.Success, response, retrievedApplicant);
         }
 

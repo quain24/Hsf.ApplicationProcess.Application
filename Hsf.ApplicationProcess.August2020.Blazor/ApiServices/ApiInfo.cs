@@ -5,7 +5,7 @@
         public bool IsSuccess { get; private set; } = false;
         public bool IsConnectionError { get; private set; }
         public bool IsParameterError { get; private set; }
-        public bool IsinputFormatError { get; private set; }
+        public bool IsInputFormatError { get; private set; }
         public bool IsUnknown { get; private set; }
         public ResponseCodes ResponseCodes { get; }
 
@@ -32,7 +32,7 @@
                     break;
 
                 case Status.InputFormatError:
-                    IsinputFormatError = true;
+                    IsInputFormatError = true;
                     break;
 
                 default:
@@ -48,6 +48,7 @@
         ConnectionError,
         ParameterError,
         InputFormatError,
+        NotFound,
         Unknown
     }
 }

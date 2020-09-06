@@ -14,11 +14,11 @@
 <h3>@Translator.header_view_applicants</h3>
 <MatDivider></MatDivider>
 <ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val" FormValidityChanged="OnFormValidityChanged"></ApplicantInsertModelValidationForm>
-<div>
-    <MatButton Label="Previous" Type="submit" OnClick="GetApplicantWithId"></MatButton>
+<div style="display: block; width: 100%; position: relative;">
+    <MatButton Label="Previous" Disabled="@_isPreviousEnabled" Type="submit" OnClick="@GetPreviousId"></MatButton>
     <MatButton Label="Update" Disabled="@_isUpdateDisabled"></MatButton>
-    <MatButton Label="Next"></MatButton>
-    <MatNumericUpDownField style="max-height: 25px; padding-bottom: -15px;" @bind-Value="@Id" Dense="true"></MatNumericUpDownField>
+    <MatButton Label="Next" Disabled="@_isNextEnabled" OnClick="@GetNextId"></MatButton>
+    <MatNumericUpDownField  OnKeyPress="@GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@Id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
 </div>
 
 @code {
@@ -28,32 +28,46 @@
     [Parameter]
     public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel();
 
-    private bool _isPreviousEnabled;
-    private bool _isNext;
+    private bool _isPreviousEnabled => Id <= 1;
+    private bool _isNextEnabled => Id == int.MaxValue;
     private bool _isUpdateDisabled = true;
 
     private Applicant ApplicantWithId { get; set; } = new Applicant();
 
-    public int Id { get; set; } = 3;
+    private int Id { get; set; }
+
+    private async Task GetNextId() => await GetApplicantWithId(++Id);
+
+    private async Task GetPreviousId() => await GetApplicantWithId(--Id);
+
+    private async Task GetWithCurrentIdByEnter(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+            await GetApplicantWithId(Id);
+    }
 
     private void OnFormValidityChanged(bool isValid)
     {
         _isUpdateDisabled = !isValid;
     }
 
-    private async Task GetApplicantWithId()
+    private async Task GetApplicantWithId(int id)
     {
         StateHasChanged();
-        var result = await ApiServices.GetApplicantById(Id, CancellationToken.None);
+        var result = await ApiServices.GetApplicantById(id, new CancellationTokenSource(5000).Token);
         if (result.IsSuccess)
         {
             Applicant = result.GetRetrievedData.ToApplicantInsertModel();
             Id = result.GetRetrievedData.ID;
             StateHasChanged();
         }
+        else if(result.IsNotFound)
+        {
+            ToastGenerator.DisplayInfo(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent + $" {result.ResponseCodes.FirstOrDefault().Value.First()}");
+        }
         else
         {
-            ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, result);
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err);
         }
     }
 

@@ -15,7 +15,7 @@
 <ApplicantInsertModelValidationForm Applicant="Applicant" FormValidityChanged="OnFormValidityChanged" Validator="Val">
 </ApplicantInsertModelValidationForm>
 
-<MatButton Label="@Translator.button_l_submit" OnClick="InsertApplicant" Disabled="@_isSubmitButtonDisabled" Type="submit"></MatButton>
+<MatButton Label="@Translator.button_l_submit" OnClick="@InsertApplicant" Disabled="@_isSubmitButtonDisabled" Type="submit"></MatButton>
 <MatButton Label="@Translator.button_l_reset" Disabled="@IsResetDisabled" OnClick="@ResetData"></MatButton>
 
 @code {
@@ -47,10 +47,10 @@
             return null;
 
         _isSubmitButtonDisabled = true;
-        var postResult = await ApiService.InsertNewApplicant(Applicant, CancellationToken.None);
+        var postResult = await ApiService.InsertNewApplicant(Applicant, new CancellationTokenSource(5000).Token);
         if (postResult.IsSuccess)
         {
-            ToastGenerator.DisplayInfo(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
+            ToastGenerator.DisplaySuccess(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
             _isSubmitButtonDisabled = false;
         }
         else if (postResult.IsConnectionError)
