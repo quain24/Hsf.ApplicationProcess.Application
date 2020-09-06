@@ -1,4 +1,5 @@
-﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
+﻿using Hsf.ApplicationProcess.August2020.Blazor.Models;
+using Hsf.ApplicationProcess.August2020.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -6,7 +7,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Hsf.ApplicationProcess.August2020.Blazor.Models;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {
@@ -17,7 +17,6 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
         public ApplicantApiService(HttpClient client)
         {
             _client = client;
-            _client.BaseAddress = new Uri("https://localhost:5011/api/applicants");
         }
 
         public async Task<ApiInfoWithApplicantData> GetApplicantById(int id, CancellationToken token)
@@ -33,7 +32,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
                 {
                     var json = await result.Content.ReadAsStringAsync();
                     output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
-                            {PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                    { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                     return SuccessGet(output);
                 }
                 catch (JsonException)
@@ -42,7 +41,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
                     return FailureDecoding(codes) as ApiInfoWithApplicantData;
                 }
             }
-            catch (HttpRequestException ex)
+
+            // 
+            catch (Exception ex)
             {
                 return NetworkConnectionError(ex);
             }
@@ -86,13 +87,13 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             return new ApiInfo(Status.Success, response);
         }
 
-
         private ApiInfo Failure(ResponseCodes responseCodes) => new ApiInfo(Status.ParameterError, responseCodes);
+
         private ApiInfo FailureDecoding(ResponseCodes responseCodes) => new ApiInfo(Status.InputFormatError, responseCodes);
 
         private ApiInfoWithApplicantData NetworkConnectionError(Exception ex, Applicant applicant = null)
         {
-            var codes = new ResponseCodes().AddCode(ex.Message, ex.StackTrace);
+            var codes = new ResponseCodes().AddCode(ex.Message, "");
             return new ApiInfoWithApplicantData(Status.ConnectionError, codes, applicant);
         }
 

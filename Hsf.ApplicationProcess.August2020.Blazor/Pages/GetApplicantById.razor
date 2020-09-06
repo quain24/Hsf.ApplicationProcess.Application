@@ -11,12 +11,12 @@
 <link rel="stylesheet" href="css/addApplicant.css" />
 <h3>@Translator.header_view_applicants</h3>
 <MatDivider></MatDivider>
-<MatNumericUpDownField @bind-Value="@id"></MatNumericUpDownField>
+<MatNumericUpDownField @bind-Value="@id" Dense="true"></MatNumericUpDownField>
 
 
-<ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val"></ApplicantInsertModelValidationForm>
+<ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val" FormValidityChanged="OnFormValidityChanged"></ApplicantInsertModelValidationForm>
 <MatButton Label="Previous" Type="submit" OnClick="GetApplicantWithId"></MatButton>
-<MatButton Label="Update"></MatButton>
+<MatButton Label="Update" Disabled="@_isUpdateDisabled"></MatButton>
 <MatButton Label="Next"></MatButton>
 
 
@@ -29,12 +29,16 @@
 
     private bool _isPreviousEnabled;
     private bool _isNext;
-    private bool _isUpdateEnabled;
+    private bool _isUpdateDisabled = true;
 
     public Applicant ApplicantWithId { get; set; } = new Applicant();
 
     public int id { get; set; } = 3;
 
+    public void OnFormValidityChanged(bool isValid)
+    {
+        _isUpdateDisabled = !isValid;
+    }
 
     private async Task GetApplicantWithId()
     {
@@ -47,8 +51,7 @@
         }
         else
         {
-            Console.WriteLine("Error");
-            //ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, result);
+            ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, result);
         }
     }
 
