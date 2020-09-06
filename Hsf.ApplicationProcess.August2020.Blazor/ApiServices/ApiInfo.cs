@@ -1,33 +1,38 @@
 ﻿namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {
-    public class PostInfo
+    public class ApiInfo
     {
         public bool IsSuccess { get; private set; } = false;
         public bool IsConnectionError { get; private set; }
         public bool IsParameterError { get; private set; }
+        public bool IsinputFormatError { get; private set; }
         public bool IsUnknown { get; private set; }
         public ResponseCodes ResponseCodes { get; }
 
-        public PostInfo(PostStatus status, ResponseCodes responseCodes)
+        public ApiInfo(Status status, ResponseCodes responseCodes)
         {
             SetStatusFromEnum(status);
             ResponseCodes = responseCodes;
         }
 
-        private void SetStatusFromEnum(PostStatus status)
+        private void SetStatusFromEnum(Status status)
         {
             switch (status)
             {
-                case PostStatus.Success:
+                case Status.Success:
                     IsSuccess = true;
                     break;
 
-                case PostStatus.ConnectionError:
+                case Status.ConnectionError:
                     IsConnectionError = true;
                     break;
 
-                case PostStatus.ParameterError:
+                case Status.ParameterError:
                     IsParameterError = true;
+                    break;
+
+                case Status.InputFormatError:
+                    IsinputFormatError = true;
                     break;
 
                 default:
@@ -37,11 +42,12 @@
         }
     }
 
-    public enum PostStatus
+    public enum Status
     {
         Success,
         ConnectionError,
         ParameterError,
+        InputFormatError,
         Unknown
     }
 }

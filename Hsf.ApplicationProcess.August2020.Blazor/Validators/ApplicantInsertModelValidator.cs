@@ -6,12 +6,8 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
 {
     public class ApplicantInsertModelValidator : AbstractValidator<ApplicantInsertModel>
     {
-        private readonly CountryValidator _countryValidator;
-
         public ApplicantInsertModelValidator(CountryValidator countryValidator)
         {
-
-            _countryValidator = countryValidator;
             RuleFor(a => a.name).NotNull().NotEmpty().MinimumLength(5);
             RuleFor(a => a.familyName).NotNull().NotEmpty().MinimumLength(5);
             RuleFor(a => a.address).NotNull().NotEmpty().MinimumLength(10);
@@ -19,9 +15,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.Validators
             RuleFor(a => a.hired).NotNull();
             RuleFor(a => a.countryOfOrigin)
                 .NotNull()
-                .SetValidator(_countryValidator)
+                .SetValidator(countryValidator)
                 .WithErrorCode(Global.ValidatorConstants.CountryErrorCode);
-            RuleFor(a => a.emailAddress).EmailAddress().WithMessage(" ").NotNull();
+            RuleFor(a => a.emailAddress).NotNull();
         }
     }
 }

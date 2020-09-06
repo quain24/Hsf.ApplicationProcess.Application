@@ -1,4 +1,6 @@
 {
+  "app_main_header": "HSF e-commerce - Aplikant demo",
+
   "app_err_address_not_found": "Niestety, wpisany adres nie istnieje.",
 
   "menu_add_applicant": "Dodaj aplikanta",

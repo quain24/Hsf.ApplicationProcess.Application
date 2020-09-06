@@ -1,13 +1,23 @@
 ﻿@page "/getbyid"
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
+@using Hsf.ApplicationProcess.August2020.Domain.Models
+@using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
+@using System.Threading
 @inject ApplicantInsertModelValidator Val
+@inject ToastGenerator ToastGenerator
+@inject ApplicantApiService ApiServices
+
 <link rel="stylesheet" href="css/addApplicant.css" />
 <h3>@Translator.header_view_applicants</h3>
 <MatDivider></MatDivider>
+<MatNumericUpDownField @bind-Value="@id"></MatNumericUpDownField>
+
 
 <ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val"></ApplicantInsertModelValidationForm>
-
+<MatButton Label="Previous" Type="submit" OnClick="GetApplicantWithId"></MatButton>
+<MatButton Label="Update"></MatButton>
+<MatButton Label="Next"></MatButton>
 
 
 @code {
@@ -16,5 +26,30 @@
 
     [Parameter]
     public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel();
+
+    private bool _isPreviousEnabled;
+    private bool _isNext;
+    private bool _isUpdateEnabled;
+
+    public Applicant ApplicantWithId { get; set; } = new Applicant();
+
+    public int id { get; set; } = 3;
+
+
+    private async Task GetApplicantWithId()
+    {
+        StateHasChanged();
+        var result = await ApiServices.GetApplicantById(id, CancellationToken.None);
+        if (result.IsSuccess)
+        {
+            ApplicantWithId = result?.GetRetrievedData;
+            Console.WriteLine(ApplicantWithId?.Address);
+        }
+        else
+        {
+            Console.WriteLine("Error");
+            //ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, result);
+        }
+    }
 
 }

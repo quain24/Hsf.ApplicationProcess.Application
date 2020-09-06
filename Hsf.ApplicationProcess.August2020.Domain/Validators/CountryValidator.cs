@@ -22,23 +22,23 @@ namespace Hsf.ApplicationProcess.August2020.Domain.Validators
             if (context.PropertyValue is null)
                 return false;
 
-            if (_lastChecked == context.PropertyValue.ToString())
-                return _lastCheckResult;
+            var countryName = context.PropertyValue.ToString();
 
-            _lastChecked = context.PropertyValue.ToString();
+            if (_lastChecked == countryName)
+                return _lastCheckResult;
+            _lastChecked = countryName;
 
             // Shortest country name is 4, longest - 56 - no need for api abuse
-            if (CountryNameLengthCheck(context.PropertyValue.ToString()))
+            if (CountryNameLengthCheck(countryName))
                 return _lastCheckResult = false;
 
-            var countryName = context.PropertyValue.ToString().Urlify();
-            var url = $"name/{countryName}?fullText=true";
+            var url = $"name/{countryName.Urlify()}?fullText=true";
             var resp = await _httpClient.GetAsync(url, cancellation);
 
             return _lastCheckResult = resp.IsSuccessStatusCode;
         }
 
         private bool CountryNameLengthCheck(string name) =>
-            name.Length < 4 || name.Length > 56;
+            name.Length < Global.ValidatorConstants.ShortestNameLengthLength || name.Length > Global.ValidatorConstants.LongestCountryNameLength;
     }
 }

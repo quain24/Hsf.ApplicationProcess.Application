@@ -32,8 +32,8 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
 
             //builder.Services.AddValidatorsFromAssemblyContaining<Program>();
             builder.Services.AddHttpClient<CountryValidator>("RestCountries", client => client.BaseAddress = new Uri("https://restcountries.eu/rest/v2/"));
-            builder.Services.AddTransient<ToastGenerator>();
 
+            builder.Services.AddScoped<ToastGenerator>();
             builder.Services.AddMatToaster(config =>
             {
                 config.Position = MatToastPosition.BottomFullWidth;
@@ -41,7 +41,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                 config.NewestOnTop = true;
                 config.ShowCloseButton = true;
                 config.MaximumOpacity = 100;
-                config.VisibleStateDuration = 3000;
+                config.VisibleStateDuration = 4000;
                 config.ShowProgressBar = true;
             });
 

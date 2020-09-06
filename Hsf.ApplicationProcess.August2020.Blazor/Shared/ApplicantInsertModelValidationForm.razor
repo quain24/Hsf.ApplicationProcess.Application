@@ -13,20 +13,21 @@
     <div class="mat-layout-grid mat-layout-grid-align-left">
         <div class="mat-layout-grid-inner">
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatTextField Label="@Translator.field_name" @bind-Value="@Applicant.name"></MatTextField></p>
+                <p><MatTextField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_name" @bind-Value="@Applicant.name"></MatTextField></p>
                 <p><ValidationMessage For="@(() => Applicant.name)" /></p>
-                <p><MatTextField Label="@Translator.field_surname" @bind-Value="@Applicant.familyName"></MatTextField></p>
+                <p><MatTextField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_surname" @bind-Value="@Applicant.familyName"></MatTextField></p>
                 <p><ValidationMessage For="@(() => Applicant.familyName)" /></p>
-                <p><MatTextField Label="@Translator.field_address" @bind-Value="@Applicant.address"></MatTextField></p>
+                <p><MatTextField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_address" @bind-Value="@Applicant.address"></MatTextField></p>
                 <p><ValidationMessage For="@(() => Applicant.address)" /></p>
-                <p><MatTextField Label="@Translator.field_country" @bind-Value="@Applicant.countryOfOrigin"></MatTextField></p>
-                <p id="err-container" style="visibility: @_countryErrorVisibility;">@Translator.field_err_country</p>
+                <p><MatTextField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_country" @bind-Value="@Applicant.countryOfOrigin"></MatTextField></p>
+                @if (_isCountryErrVisible)
+                {<p id="err-container">@Translator.field_err_country</p>}
             </div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-1" style="min-width: 50px"></div>
             <div class="mat-layout-grid-cell mat-layout-grid-cell-span-5" style="min-width: 250px">
-                <p><MatNumericUpDownField Label="@Translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@Applicant.age"></MatNumericUpDownField></p>
+                <p><MatNumericUpDownField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_age" DecimalPlaces=0 Minimum="20" Maximum="60" @bind-Value="@Applicant.age"></MatNumericUpDownField></p>
                 <p><ValidationMessage For="@(() => Applicant.age)" /></p>
-                <p><MatTextField Label="@Translator.field_email" @bind-Value="@Applicant.emailAddress"></MatTextField></p>
+                <p><MatTextField OnFocus="Editing" OnFocusOut="NotEditing" Label="@Translator.field_email" @bind-Value="@Applicant.emailAddress"></MatTextField></p>
                 <p><ValidationMessage For="@(() => Applicant.emailAddress)" /></p>
                 <br />
                 <p><MatSlideToggle Label="@Translator.field_status_hired" @bind-Value="@Applicant.hired"></MatSlideToggle></p>
@@ -37,6 +38,22 @@
 </EditForm>
 
 @code {
+    private Timer GuiUpdateTimer { get; set; }
+    private bool _lastValidationState = false;
+    private bool _isCountryErrVisible = false;
+
+    // Asynchronous fluent validation is not supported in blazor WASM at this moment
+    // Workaround is needed - force refresh so gui can be updated in case of validation over api
+    public ApplicantInsertModelValidationForm()
+    {
+        GuiUpdateTimer = new Timer(500);
+        GuiUpdateTimer.Elapsed += OnTimedEvent;
+        GuiUpdateTimer.AutoReset = true;
+        GuiUpdateTimer.Enabled = true;
+        GuiUpdateTimer.Start();
+        _isCountryErrVisible = false;
+    }
+
     [CascadingParameter]
     public I18nText.local Translator { get; set; }
 
@@ -49,57 +66,41 @@
     [Parameter]
     public ApplicantInsertModelValidator Validator { get; set; }
 
-    private Timer GuiUpdateTimer { get; set; }
-    private string _countryErrorVisibility;
-    private bool _lastValidationState = false;
-
-    // Asynchronous fluent validation is not supported in blazor WASM at this moment
-    // Workaround is needed - force refresh so gui can be updated in case of validation over api
     protected override void OnParametersSet()
     {
-        GuiUpdateTimer = new Timer(500);
-        GuiUpdateTimer.Elapsed += OnTimedEvent;
-        GuiUpdateTimer.AutoReset = true;
-        GuiUpdateTimer.Enabled = true;
-        GuiUpdateTimer.Start();
-        HideCountryErrBox();
+        Validator.CascadeMode = CascadeMode.Stop;
     }
 
-    private void OnTimedEvent(object source, ElapsedEventArgs e)
-    {
-        Task.Run(async () =>
-        {
-            await Update();
-        });
-    }
-
-    private async Task Update()
+    private async Task Update(bool force = false)
     {
         var result = await Validator.ValidateAsync(Applicant);
         EnableIfNeededCountryErrMsg(result);
         StateHasChanged();
-        if (_lastValidationState != result.IsValid)
+        if (_lastValidationState != result.IsValid || force)
         {
             _lastValidationState = result.IsValid;
             await OnFormValidityChanged(result.IsValid);
         }
     }
 
+    private async Task Editing() => await OnFormValidityChanged(false);
+
+    private async Task NotEditing() => await Update(true);
+
     private void EnableIfNeededCountryErrMsg(ValidationResult result)
     {
-        if (result.Errors.Any(c => c.ErrorCode == Global.ValidatorConstants.CountryErrorCode) && Applicant.countryOfOrigin.Length > 0)
-            ShowCountryErrBox();
-        else
-            HideCountryErrBox();
+        _isCountryErrVisible = result.Errors.Any(c => c.ErrorCode == Global.ValidatorConstants.CountryErrorCode) && Applicant.countryOfOrigin.Length > 0;
     }
-
-    private void HideCountryErrBox() => _countryErrorVisibility = "hidden";
-    private void ShowCountryErrBox() => _countryErrorVisibility = "visible";
 
     async Task OnFormValidityChanged(bool valid)
     {
         if (FormValidityChanged.HasDelegate)
             await FormValidityChanged.InvokeAsync(valid);
+    }
+
+    private void OnTimedEvent(object source, ElapsedEventArgs e)
+    {
+        Task.Run(async () => await Update());
     }
 
     public void Dispose()

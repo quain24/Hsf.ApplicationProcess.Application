@@ -26,43 +26,42 @@
     public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel() { familyName = "asdasdasdasd", address = "asdasdasdasd", age = 22, emailAddress = "heniuw@wp.pl", name = "asdasasdasdasd" };
     
 
-    private bool _isSubmitButtonDisabled = true;
+    private volatile bool _isSubmitButtonDisabled = true;
     private bool IsResetDisabled => Applicant.IsDefault();
-
-
+    
     private void ResetData()
     {
         Applicant = new ApplicantInsertModel();
         _isSubmitButtonDisabled = true;
     }
 
-    void OnFormValidityChanged(bool validity)
+    void OnFormValidityChanged(bool idValid)
     {
-        _isSubmitButtonDisabled = !validity;
+        _isSubmitButtonDisabled = !idValid;
+        StateHasChanged();
     }
 
-    private async Task<PostInfo> InsertApplicant()
+    private async Task<ApiInfo> InsertApplicant()
     {
-        if (!_isSubmitButtonDisabled)
+        if (_isSubmitButtonDisabled)
+            return null;
+
+        _isSubmitButtonDisabled = true;
+        var postResult = await ApiService.InsertNewApplicant(Applicant, CancellationToken.None);
+        if (postResult.IsSuccess)
         {
-            _isSubmitButtonDisabled = true;
-            var postResult = await ApiService.InsertNewApplicant(Applicant, CancellationToken.None);
-            if (postResult.IsSuccess)
-            {
-                ToastGenerator.DisplayInfo(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
-                _isSubmitButtonDisabled = false;
-            }
-            else if (postResult.IsConnectionError)
-            {
-                ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await InsertApplicant());
-                _isSubmitButtonDisabled = false;
-            }
-            else
-            {
-                ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
-            }
-            return postResult;
+            ToastGenerator.DisplayInfo(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
+            _isSubmitButtonDisabled = false;
         }
-        return null;
+        else if (postResult.IsConnectionError)
+        {
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await InsertApplicant());
+            _isSubmitButtonDisabled = false;
+        }
+        else
+        {
+            ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
+        }
+        return postResult;
     }
 }

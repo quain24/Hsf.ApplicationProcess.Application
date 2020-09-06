@@ -1,4 +1,6 @@
 {
+  "app_main_header": "HSF e-commerce Applicant demo app",
+
   "app_err_address_not_found": "This web address does not exist, sorry.",
 
   "menu_add_applicant": "Add Applicant",
@@ -20,7 +22,7 @@
   "button_l_previous": "Previous",
 
   "field_err_country": "Such country does not exist.",
-  "field_err_email": "Email format is invalid.", 
+  "field_err_email": "Email format is invalid.",
 
   "toast_h_applicant_added": "Success!",
   "toast_m_applicant_added": "Applicant has been added: ",

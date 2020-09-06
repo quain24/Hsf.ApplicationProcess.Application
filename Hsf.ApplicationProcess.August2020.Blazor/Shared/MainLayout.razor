@@ -7,6 +7,7 @@
 @inject ApplicantInsertModelValidator Val
 
 <link rel="stylesheet" href="css/header.css" />
+<link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet">
 
 <div class="sidebar">
     <NavMenu></NavMenu>
@@ -14,7 +15,8 @@
 
 <div class="main" style="min-width: 500px">
     <div class="header">
-        <h1>HSF e-commerce Applicant demo app</h1>
+        <h1>@Translator.app_main_header</h1>
+        <h5>Henryk Wiśniewski</h5>
     </div>
     <div class="mat-elevation-z3 main-container">
         <div class="content px-4">
@@ -27,7 +29,7 @@
 
 @code
 {
-    [CascadingParameter] public local Translator { get; set; } = new local();
+    public local Translator { get; set; } = new local();
 
     protected override async Task OnInitializedAsync()
     {
@@ -42,4 +44,5 @@
             .SetValidator(new EmailValidator())
             .WithMessage(Translator.field_err_email);
     }
+
 }

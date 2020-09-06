@@ -20,22 +20,39 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             _client.BaseAddress = new Uri("https://localhost:5011/api/applicants");
         }
 
-        public async Task<Applicant> GetApplicantById(int id, CancellationToken token)
+        public async Task<ApiInfoWithApplicantData> GetApplicantById(int id, CancellationToken token)
         {
             Applicant output;
+            HttpResponseMessage result = null;
             try
             {
-                output = await _client.GetFromJsonAsync<Applicant>(_client.BaseAddress + $"/{id}",
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }, token);
+                result = await _client.GetAsync(_client.BaseAddress + $"/{id}", token);
+                result.EnsureSuccessStatusCode();
+
+                try
+                {
+                    var json = await result.Content.ReadAsStringAsync();
+                    output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
+                            {PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase});
+                    return SuccessGet(output);
+                }
+                catch (JsonException)
+                {
+                    var codes = await ExtractErrorCodes(result, token);
+                    return FailureDecoding(codes) as ApiInfoWithApplicantData;
+                }
             }
-            catch (Exception)
+            catch (HttpRequestException ex)
             {
-                return new Applicant();
+                return NetworkConnectionError(ex);
             }
-            return output;
+            finally
+            {
+                result?.Dispose();
+            }
         }
 
-        public async Task<PostInfo> InsertNewApplicant(ApplicantInsertModel newApplicant, CancellationToken token)
+        public async Task<ApiInfo> InsertNewApplicant(ApplicantInsertModel newApplicant, CancellationToken token)
         {
             HttpResponseMessage result;
             try
@@ -55,20 +72,28 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             return Failure(responseCodes);
         }
 
-        private PostInfo Success()
+        private ApiInfoWithApplicantData SuccessGet(Applicant retrievedApplicant)
+        {
+            var response = new ResponseCodes();
+            response.AddCode("Get", "success");
+            return new ApiInfoWithApplicantData(Status.Success, response, retrievedApplicant);
+        }
+
+        private ApiInfo Success()
         {
             var response = new ResponseCodes();
             response.AddCode("Insert", "success");
-            return new PostInfo(PostStatus.Success, response);
+            return new ApiInfo(Status.Success, response);
         }
 
 
-        private PostInfo Failure(ResponseCodes responseCodes) => new PostInfo(PostStatus.ParameterError, responseCodes);
+        private ApiInfo Failure(ResponseCodes responseCodes) => new ApiInfo(Status.ParameterError, responseCodes);
+        private ApiInfo FailureDecoding(ResponseCodes responseCodes) => new ApiInfo(Status.InputFormatError, responseCodes);
 
-        private PostInfo NetworkConnectionError(Exception ex)
+        private ApiInfoWithApplicantData NetworkConnectionError(Exception ex, Applicant applicant = null)
         {
             var codes = new ResponseCodes().AddCode(ex.Message, ex.StackTrace);
-            return new PostInfo(PostStatus.ConnectionError, codes);
+            return new ApiInfoWithApplicantData(Status.ConnectionError, codes, applicant);
         }
 
         private async Task<ResponseCodes> ExtractErrorCodes(HttpResponseMessage fromMessage, CancellationToken token)

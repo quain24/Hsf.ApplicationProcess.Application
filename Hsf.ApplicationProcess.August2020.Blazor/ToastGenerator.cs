@@ -26,6 +26,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                 {
                     if (retryAction != null)
                     {
+                        options.ShowCloseButton = false;
                         options.Onclick = toast =>
                         {
                             retryAction.Invoke();
@@ -35,7 +36,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                 });
         }
 
-        public void DisplayPostInfoErrors(string title, string messageHeader, PostInfo info)
+        public void DisplayPostInfoErrors(string title, string messageHeader, ApiInfo info)
         {
             var type = MatToastType.Danger;
             var message = string.Empty;
@@ -48,7 +49,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
                 message += tmp + " ";
             }
 
-            _toaster.Add(title + " " + message, type, messageHeader);
+            _toaster.Add(title + " " + message, type, messageHeader, null, configure => configure.ShowCloseButton = false);
 
         }
     }
