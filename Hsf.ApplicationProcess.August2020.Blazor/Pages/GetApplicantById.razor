@@ -18,7 +18,7 @@
     <MatButton Label="Previous" Disabled="@_isPreviousEnabled" Type="submit" OnClick="@GetPreviousId"></MatButton>
     <MatButton Label="Update" OnClick="@UpdateApplicant" Disabled="@_isUpdateDisabled"></MatButton>
     <MatButton Label="Next" Disabled="@_isNextEnabled" OnClick="@GetNextId"></MatButton>
-    <MatNumericUpDownField  OnKeyPress="@GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@Id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
+    <MatNumericUpDownField OnKeyPress="@GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@Id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
 </div>
 
 @code {
@@ -32,7 +32,8 @@
     private bool _isNextEnabled => Id == int.MaxValue;
     private bool _isUpdateDisabled = true;
     
-    private int Id { get; set; }
+    private int Id;
+    private int _lastGoodId;
 
     private async Task GetNextId() => await GetApplicantWithId(++Id);
 
@@ -40,7 +41,6 @@
 
     private async Task GetWithCurrentIdByEnter(KeyboardEventArgs e)
     {
-        StateHasChanged();
         if (e.Key == "Enter")
             await GetApplicantWithId(Id);
     }
@@ -62,7 +62,7 @@
         }
         else if(result.IsNotFound)
         {
-            ToastGenerator.DisplayInfo(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent + $" {result.ResponseCodes.FirstOrDefault().Value.First()}");
+            ToastGenerator.DisplayInfo(Translator.toast_h_not_found, Translator.toast_m_not_found + $"{result.ResponseCodes.FirstOrDefault().Value.First()}");
         }
         else
         {
@@ -79,18 +79,22 @@
         var postResult = await ApiServices.UpdateApplicant(Id, Applicant, new CancellationTokenSource(5000).Token);
         if (postResult.IsSuccess)
         {
-            ToastGenerator.DisplaySuccess(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
+            _lastGoodId = Id;
+            ToastGenerator.DisplaySuccess(Translator.toast_h_applicant_updated, Translator.toast_m_applicant_updated + Applicant.fullName);
             _isUpdateDisabled = false;
         }
         else if (postResult.IsConnectionError)
         {
             ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await UpdateApplicant());
             _isUpdateDisabled = false;
+            Id = _lastGoodId;
         }
         else
         {
             ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
+            Id = _lastGoodId;
         }
+        StateHasChanged();
         return postResult;
     }
 
