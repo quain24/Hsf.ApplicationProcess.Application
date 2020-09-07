@@ -8,7 +8,7 @@ Both web api and blazor webassembly run on kestrell.
 
 ### Default config:
 * Both apps use https, so additional certificate permissions may be required on first launch (there should be prompt from VS)
-* Language detection is automatic, logging is in default language (EN)
+* Language detection is automatic in both apps, logging is in default language (EN)
 * Supported languages are:
   * English (fallback language)
   * Polish
