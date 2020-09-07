@@ -23,7 +23,7 @@
     public I18nText.local Translator { get; set; }
 
     [Parameter]
-    public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel() { familyName = "asdasdasdasd", address = "asdasdasdasd", age = 22, emailAddress = "heniuw@wp.pl", name = "asdasasdasdasd" };
+    public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel();
 
     private volatile bool _isSubmitButtonDisabled = true;
     private bool IsResetDisabled => Applicant.IsDefault();
