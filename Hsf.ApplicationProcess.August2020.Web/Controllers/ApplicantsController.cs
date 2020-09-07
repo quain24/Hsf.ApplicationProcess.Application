@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Hsf.ApplicationProcess.August2020.Web.DTO;
@@ -59,11 +60,11 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         /// </summary>
         /// <param name="id" example="1">Target ID</param>
         /// <param name="applicantUpdateDto">And updated applicant data in json format</param>
-        [HttpPut]
+        [HttpPut("{id}")]
         [SwaggerRequestExample(typeof(ApplicantNoIdDTO), typeof(ApplicantNoIdDTOExample))]
         [SwaggerResponse((int)HttpStatusCode.Created, "ID exists and was updated.", typeof(Applicant))]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(string))]
-        public async Task<ActionResult<Applicant>> UpdateApplicant([FromHeader][Range(0, int.MaxValue)] int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
+        public async Task<ActionResult<Applicant>> UpdateApplicant([Range(0, Int32.MaxValue)]int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
         {
             var applicant = _mapper.Map<Applicant>(applicantUpdateDto);
 

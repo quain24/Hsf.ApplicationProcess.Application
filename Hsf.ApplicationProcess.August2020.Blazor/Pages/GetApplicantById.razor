@@ -16,7 +16,7 @@
 <ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val" FormValidityChanged="OnFormValidityChanged"></ApplicantInsertModelValidationForm>
 <div style="display: block; width: 100%; position: relative;">
     <MatButton Label="Previous" Disabled="@_isPreviousEnabled" Type="submit" OnClick="@GetPreviousId"></MatButton>
-    <MatButton Label="Update" Disabled="@_isUpdateDisabled"></MatButton>
+    <MatButton Label="Update" OnClick="@UpdateApplicant" Disabled="@_isUpdateDisabled"></MatButton>
     <MatButton Label="Next" Disabled="@_isNextEnabled" OnClick="@GetNextId"></MatButton>
     <MatNumericUpDownField  OnKeyPress="@GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@Id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
 </div>
@@ -31,9 +31,7 @@
     private bool _isPreviousEnabled => Id <= 1;
     private bool _isNextEnabled => Id == int.MaxValue;
     private bool _isUpdateDisabled = true;
-
-    private Applicant ApplicantWithId { get; set; } = new Applicant();
-
+    
     private int Id { get; set; }
 
     private async Task GetNextId() => await GetApplicantWithId(++Id);
@@ -42,6 +40,7 @@
 
     private async Task GetWithCurrentIdByEnter(KeyboardEventArgs e)
     {
+        StateHasChanged();
         if (e.Key == "Enter")
             await GetApplicantWithId(Id);
     }
@@ -69,6 +68,30 @@
         {
             ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err);
         }
+    }
+
+    private async Task<ApiInfoWithApplicantData> UpdateApplicant()
+    {
+        if (_isUpdateDisabled)
+            return null;
+
+        _isUpdateDisabled = true;
+        var postResult = await ApiServices.UpdateApplicant(Id, Applicant, new CancellationTokenSource(5000).Token);
+        if (postResult.IsSuccess)
+        {
+            ToastGenerator.DisplaySuccess(Translator.toast_h_applicant_added, Translator.toast_m_applicant_added + Applicant.fullName);
+            _isUpdateDisabled = false;
+        }
+        else if (postResult.IsConnectionError)
+        {
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await UpdateApplicant());
+            _isUpdateDisabled = false;
+        }
+        else
+        {
+            ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
+        }
+        return postResult;
     }
 
 }

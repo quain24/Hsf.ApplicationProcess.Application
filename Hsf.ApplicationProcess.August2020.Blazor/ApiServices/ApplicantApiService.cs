@@ -8,6 +8,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Hsf.ApplicationProcess.August2020.Blazor.Extensions;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {
@@ -33,7 +34,7 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
                         return NotFound(id);
                     var json = await result.Content.ReadAsStringAsync();
                     var output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
-                        { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
                     return SuccessGet(output);
                 }
                 catch (JsonException)
@@ -83,6 +84,45 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
             }
         }
 
+        public async Task<ApiInfoWithApplicantData> UpdateApplicant(int id,
+            ApplicantInsertModel updatedApplicant, CancellationToken token)
+        {
+            HttpResponseMessage result = null;
+            try
+            {
+                Applicant applicant = updatedApplicant.ToApplicantModel(id);
+                result = await _client.PutAsJsonAsync(_client.BaseAddress + $"/{id}", applicant, token);
+                string res = JsonSerializer.Serialize<Applicant>(applicant);
+
+                try
+                {
+                    if (result.StatusCode == HttpStatusCode.NotFound)
+                        return NotFound(id);
+
+                    if (result.StatusCode == HttpStatusCode.BadRequest)
+                        return FailureWithData(await ExtractErrorCodes(result, token));
+
+                    var json = await result.Content.ReadAsStringAsync();
+                    var output = JsonSerializer.Deserialize<Applicant>(json, new JsonSerializerOptions
+                    { PropertyNameCaseInsensitive = false, PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                    return SuccessGet(output);
+                }
+                catch (JsonException)
+                {
+                    var codes = await ExtractErrorCodes(result, token);
+                    return FailureDecoding(codes) as ApiInfoWithApplicantData;
+                }
+            }
+            catch (Exception ex)
+            {
+                return NetworkConnectionError(ex);
+            }
+            finally
+            {
+                result?.Dispose();
+            }
+        }
+
         private ApiInfoWithApplicantData SuccessGet(Applicant retrievedApplicant)
         {
             var response = new ResponseCodes().AddCode("Get", "success");
@@ -97,6 +137,9 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
         }
 
         private ApiInfo Failure(ResponseCodes responseCodes) => new ApiInfo(Status.ParameterError, responseCodes);
+
+        private ApiInfoWithApplicantData FailureWithData(ResponseCodes responseCodes, Applicant applicantData = null) =>
+            new ApiInfoWithApplicantData(Status.ParameterError, responseCodes, applicantData);
 
         private ApiInfo FailureDecoding(ResponseCodes responseCodes) => new ApiInfo(Status.InputFormatError, responseCodes);
 
