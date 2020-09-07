@@ -70,7 +70,7 @@
 
     protected override void OnParametersSet()
     {
-        Validator.CascadeMode = CascadeMode.Stop;
+        //Validator.CascadeMode = CascadeMode.Stop;
     }
 
     private async Task Update(bool force = false)
@@ -91,7 +91,8 @@
 
     private void EnableIfNeededCountryErrMsg(ValidationResult result)
     {
-        _isCountryErrVisible = result.Errors.Any(c => c.ErrorCode == Global.ValidatorConstants.CountryErrorCode) && Applicant.countryOfOrigin.Length > 0;
+        _isCountryErrVisible = result.Errors.Any(c =>
+            c.ErrorCode == Global.ValidatorConstants.CountryErrorCode) && Applicant.countryOfOrigin.Length > 0;
     }
 
     async Task OnFormValidityChanged(bool valid)
