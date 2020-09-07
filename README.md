@@ -1,7 +1,7 @@
 # Hsf.ApplicationProcess.Application
 ## Henryk Wiśniewski
 
-This demo app should not require any additiona build config or specyfic build order.
+This demo app should not require any additional build config or specific build order.
 <br />
 
 Both web api and blazor webassembly run on kestrell.
