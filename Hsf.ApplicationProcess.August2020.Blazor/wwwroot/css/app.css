@@ -103,7 +103,7 @@ app {
 }
 
 .navbar-toggler {
-    background-color: whitesmoke;
+    background-color: slategray;
 }
 
 .validation-message {
@@ -145,9 +145,7 @@ app {
 }
 
 @media (min-width: 768px) {
-    app {
-        flex-direction: row;
-    }
+    app { flex-direction: row; }
 
     .sidebar {
         width: 250px;
@@ -166,9 +164,7 @@ app {
         padding-right: 1.5rem !important;
     }
 
-    .navbar-toggler {
-        display: none;
-    }
+    .navbar-toggler { display: none; }
 
     .sidebar .collapse {
         /* Never collapse the sidebar for wide screens */

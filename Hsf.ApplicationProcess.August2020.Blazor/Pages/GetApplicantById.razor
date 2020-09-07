@@ -1,7 +1,6 @@
 ﻿@page "/getbyid"
 @using Hsf.ApplicationProcess.August2020.Blazor.Models
 @using Hsf.ApplicationProcess.August2020.Blazor.Validators
-@using Hsf.ApplicationProcess.August2020.Domain.Models
 @using Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 @using Hsf.ApplicationProcess.August2020.Blazor.Extensions
 @using System.Threading
@@ -15,10 +14,10 @@
 <MatDivider></MatDivider>
 <ApplicantInsertModelValidationForm Applicant="Applicant" Validator="Val" FormValidityChanged="OnFormValidityChanged"></ApplicantInsertModelValidationForm>
 <div style="display: block; width: 100%; position: relative;">
-    <MatButton Label="Previous" Disabled="@_isPreviousEnabled" Type="submit" OnClick="@GetPreviousId"></MatButton>
+    <MatButton Label="Previous" Disabled="@IsPreviousEnabled" Type="submit" OnClick="@GetPreviousId"></MatButton>
     <MatButton Label="Update" OnClick="@UpdateApplicant" Disabled="@_isUpdateDisabled"></MatButton>
-    <MatButton Label="Next" Disabled="@_isNextEnabled" OnClick="@GetNextId"></MatButton>
-    <MatNumericUpDownField OnKeyPress="@GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@Id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
+    <MatButton Label="Next" Disabled="@IsNextEnabled" OnClick="@GetNextId"></MatButton>
+    <MatNumericUpDownField IconOnClick="GetWithCurrentId" @onchange="IdChangedByNumField" OnKeyPress="GetWithCurrentIdByEnter" style="max-width: 100px;" @bind-Value="@_id" Minimum="1" Maximum="@int.MaxValue" Dense="true"></MatNumericUpDownField>
 </div>
 
 @code {
@@ -28,21 +27,28 @@
     [Parameter]
     public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel();
 
-    private bool _isPreviousEnabled => Id <= 1;
-    private bool _isNextEnabled => Id == int.MaxValue;
+    private bool IsPreviousEnabled => _id <= 1;
+    private bool IsNextEnabled => _id == int.MaxValue;
     private bool _isUpdateDisabled = true;
-    
-    private int Id;
+
+    private int _id;
     private int _lastGoodId;
 
-    private async Task GetNextId() => await GetApplicantWithId(++Id);
+    private async Task GetNextId() => await GetApplicantWithId(++_id);
 
-    private async Task GetPreviousId() => await GetApplicantWithId(--Id);
+    private async Task GetPreviousId() => await GetApplicantWithId(--_id);
 
     private async Task GetWithCurrentIdByEnter(KeyboardEventArgs e)
     {
+        await Task.Delay(1); // yield so the parameter can be updated with given ui value
         if (e.Key == "Enter")
-            await GetApplicantWithId(Id);
+            await GetApplicantWithId(_id);
+    }
+
+    private async Task GetWithCurrentId()
+    {
+        await GetApplicantWithId(_id);
+        StateHasChanged();
     }
 
     private void OnFormValidityChanged(bool isValid)
@@ -57,17 +63,18 @@
         if (result.IsSuccess)
         {
             Applicant = result.GetRetrievedData.ToApplicantInsertModel();
-            Id = result.GetRetrievedData.ID;
+            _id = result.GetRetrievedData.ID;
             StateHasChanged();
         }
-        else if(result.IsNotFound)
+        else if (result.IsNotFound)
         {
             ToastGenerator.DisplayInfo(Translator.toast_h_not_found, Translator.toast_m_not_found + $"{result.ResponseCodes.FirstOrDefault().Value.First()}");
         }
         else
         {
-            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err);
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err_get);
         }
+        StateHasChanged();
     }
 
     private async Task<ApiInfoWithApplicantData> UpdateApplicant()
@@ -76,26 +83,31 @@
             return null;
 
         _isUpdateDisabled = true;
-        var postResult = await ApiServices.UpdateApplicant(Id, Applicant, new CancellationTokenSource(5000).Token);
+        var postResult = await ApiServices.UpdateApplicant(_id, Applicant, new CancellationTokenSource(5000).Token);
         if (postResult.IsSuccess)
         {
-            _lastGoodId = Id;
+            _lastGoodId = _id;
             ToastGenerator.DisplaySuccess(Translator.toast_h_applicant_updated, Translator.toast_m_applicant_updated + Applicant.fullName);
             _isUpdateDisabled = false;
         }
         else if (postResult.IsConnectionError)
         {
-            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await UpdateApplicant());
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err_add, async () => await UpdateApplicant());
             _isUpdateDisabled = false;
-            Id = _lastGoodId;
+            _id = _lastGoodId;
         }
         else
         {
             ToastGenerator.DisplayPostInfoErrors(Translator.toast_h_bad_param_sent, Translator.toast_m_bad_param_sent, postResult);
-            Id = _lastGoodId;
+            _id = _lastGoodId;
         }
         StateHasChanged();
         return postResult;
     }
 
+    private void IdChangedByNumField(ChangeEventArgs e)
+    {
+        _id = (int)e.Value;
+        StateHasChanged();
+    }
 }

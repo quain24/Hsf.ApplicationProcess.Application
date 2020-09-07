@@ -89,7 +89,10 @@ namespace Hsf.ApplicationProcess.August2020.Blazor.I18nText
         public string toast_m_bad_param_sent;
 
         /// <summary>"Could not add applicant to database - API is not reachable. Click to try again."</summary>
-        public string toast_m_connection_err;
+        public string toast_m_connection_err_add;
+
+        /// <summary>"Could not get applicant from database - API is not reachable. Click to try again."</summary>
+        public string toast_m_connection_err_get;
 
         /// <summary>"This id does not exist in database - ID: "</summary>
         public string toast_m_not_found;

@@ -55,7 +55,7 @@
         }
         else if (postResult.IsConnectionError)
         {
-            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err, async () => await InsertApplicant());
+            ToastGenerator.DisplayConnectionError(Translator.toast_h_connection_err, Translator.toast_m_connection_err_add, async () => await InsertApplicant());
             _isSubmitButtonDisabled = false;
         }
         else
