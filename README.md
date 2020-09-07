@@ -12,6 +12,7 @@ Both web api and blazor webassembly run on kestrell.
 * Supported languages are:
   * English (fallback language)
   * Polish
+* InMemory database will be populated with few Applicants on first Api call
   
 Default Swagger interface:
 https://localhost:5011/swagger/index.html
