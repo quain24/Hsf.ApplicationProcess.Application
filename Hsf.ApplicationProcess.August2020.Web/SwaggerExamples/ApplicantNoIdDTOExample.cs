@@ -1,5 +1,4 @@
-﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
-using Hsf.ApplicationProcess.August2020.Web.DTO;
+﻿using Hsf.ApplicationProcess.August2020.Web.DTO;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Hsf.ApplicationProcess.August2020.Web.SwaggerExamples

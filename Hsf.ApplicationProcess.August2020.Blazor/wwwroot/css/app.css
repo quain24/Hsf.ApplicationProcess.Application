@@ -41,10 +41,10 @@ app {
             margin-left: 1.5rem;
         }
 
-.main .top-row a:first-child {
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+        .main .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 .sidebar {
     background: rgb(6,112,110);
@@ -52,7 +52,6 @@ app {
 }
 
     .sidebar .top-row {
-       
     }
 
     .sidebar .navbar-brand {
@@ -123,12 +122,12 @@ app {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
-    cursor: pointer;
-    position: absolute;
-    right: 0.75rem;
-    top: 0.5rem;
-}
+    #blazor-error-ui .dismiss {
+        cursor: pointer;
+        position: absolute;
+        right: 0.75rem;
+        top: 0.5rem;
+    }
 
 @media (max-width: 767.98px) {
     .main .top-row:not(.auth) {
@@ -145,7 +144,9 @@ app {
 }
 
 @media (min-width: 768px) {
-    app { flex-direction: row; }
+    app {
+        flex-direction: row;
+    }
 
     .sidebar {
         width: 250px;
@@ -164,7 +165,9 @@ app {
         padding-right: 1.5rem !important;
     }
 
-    .navbar-toggler { display: none; }
+    .navbar-toggler {
+        display: none;
+    }
 
     .sidebar .collapse {
         /* Never collapse the sidebar for wide screens */

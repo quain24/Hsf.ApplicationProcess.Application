@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-
-namespace Hsf.ApplicationProcess.August2020.Domain.Models
+﻿namespace Hsf.ApplicationProcess.August2020.Domain.Models
 {
     public class Applicant
     {

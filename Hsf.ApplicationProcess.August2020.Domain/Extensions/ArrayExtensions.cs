@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Hsf.ApplicationProcess.August2020.Domain.Extensions
+﻿namespace Hsf.ApplicationProcess.August2020.Domain.Extensions
 {
     public static class ArrayExtensions
     {

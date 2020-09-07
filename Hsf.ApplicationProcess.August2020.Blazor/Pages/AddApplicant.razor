@@ -24,11 +24,10 @@
 
     [Parameter]
     public ApplicantInsertModel Applicant { get; set; } = new ApplicantInsertModel() { familyName = "asdasdasdasd", address = "asdasdasdasd", age = 22, emailAddress = "heniuw@wp.pl", name = "asdasasdasdasd" };
-    
 
     private volatile bool _isSubmitButtonDisabled = true;
     private bool IsResetDisabled => Applicant.IsDefault();
-    
+
     private void ResetData()
     {
         Applicant = new ApplicantInsertModel();

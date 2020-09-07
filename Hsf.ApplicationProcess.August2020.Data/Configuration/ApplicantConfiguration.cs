@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Hsf.ApplicationProcess.August2020.Domain.Models;
+﻿using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Hsf.ApplicationProcess.August2020.Data.Configuration
 {
-    class ApplicantConfiguration : IEntityTypeConfiguration<Applicant>
+    internal class ApplicantConfiguration : IEntityTypeConfiguration<Applicant>
     {
         public void Configure(EntityTypeBuilder<Applicant> builder)
         {

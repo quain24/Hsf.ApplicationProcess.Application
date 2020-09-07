@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper.Internal;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace Hsf.ApplicationProcess.August2020.Web.Extensions
 {
@@ -17,7 +13,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Extensions
             parameterList.Remove("");
 
             //logEntry = parameterList.Aggregate(logEntry, (current, errorType) => current + $" {errorType},").TrimEnd(',');
-            logger.LogError(logEntry+"{parameterList}", parameterList);
+            logger.LogError(logEntry + "{parameterList}", parameterList);
         }
     }
 }

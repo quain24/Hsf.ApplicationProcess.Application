@@ -1,4 +1,5 @@
-﻿using Hsf.ApplicationProcess.August2020.Blazor.Models;
+﻿using Hsf.ApplicationProcess.August2020.Blazor.Extensions;
+using Hsf.ApplicationProcess.August2020.Blazor.Models;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,6 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Hsf.ApplicationProcess.August2020.Blazor.Extensions;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor.ApiServices
 {

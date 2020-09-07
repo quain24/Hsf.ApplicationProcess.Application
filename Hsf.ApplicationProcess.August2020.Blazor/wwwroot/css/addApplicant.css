@@ -1,4 +1,4 @@
-﻿*{
+﻿* {
     margin: 0;
     padding: 0;
 }
@@ -10,7 +10,7 @@
     height: 30px;
 }
 
-.main-container{
+.main-container {
     padding: 45px;
     margin: 50px;
     position: center;
@@ -20,4 +20,3 @@
     min-width: 200px;
     max-width: 200px;
 }
-

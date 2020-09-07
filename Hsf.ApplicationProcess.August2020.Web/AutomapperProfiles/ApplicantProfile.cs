@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Hsf.ApplicationProcess.August2020.Web.DTO;
 

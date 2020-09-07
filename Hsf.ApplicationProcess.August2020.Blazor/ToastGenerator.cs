@@ -1,8 +1,8 @@
-﻿using MatBlazor;
+﻿using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
+using MatBlazor;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Hsf.ApplicationProcess.August2020.Blazor.ApiServices;
 
 namespace Hsf.ApplicationProcess.August2020.Blazor
 {
@@ -55,7 +55,6 @@ namespace Hsf.ApplicationProcess.August2020.Blazor
             }
 
             _toaster.Add(title + " " + message, type, messageHeader, null, configure => configure.ShowCloseButton = false);
-
         }
     }
 }

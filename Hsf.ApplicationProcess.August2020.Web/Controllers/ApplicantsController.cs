@@ -1,5 +1,4 @@
-﻿using System;
-using AutoMapper;
+﻿using AutoMapper;
 using Hsf.ApplicationProcess.August2020.Data.Repositories;
 using Hsf.ApplicationProcess.August2020.Domain.Models;
 using Hsf.ApplicationProcess.August2020.Web.DTO;
@@ -10,6 +9,7 @@ using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -64,7 +64,7 @@ namespace Hsf.ApplicationProcess.August2020.Web.Controllers
         [SwaggerRequestExample(typeof(ApplicantNoIdDTO), typeof(ApplicantNoIdDTOExample))]
         [SwaggerResponse((int)HttpStatusCode.Created, "ID exists and was updated.", typeof(Applicant))]
         [SwaggerResponse((int)HttpStatusCode.NotFound, "Provided applicant ID does not exist", typeof(string))]
-        public async Task<ActionResult<Applicant>> UpdateApplicant([Range(0, Int32.MaxValue)]int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
+        public async Task<ActionResult<Applicant>> UpdateApplicant([Range(0, Int32.MaxValue)] int id, [FromBody] ApplicantNoIdDTO applicantUpdateDto)
         {
             var applicant = _mapper.Map<Applicant>(applicantUpdateDto);
 
